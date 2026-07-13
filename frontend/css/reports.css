@@ -1,0 +1,43 @@
+/**
+ * reports.css
+ * Specific styles for Reports page.
+ */
+
+.chart-report-wrapper {
+    min-height: 280px;
+    position: relative;
+}
+
+.report-stat-widget {
+    border-left: 3px solid var(--border-color);
+    padding-left: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.report-stat-widget.primary {
+    border-left-color: var(--primary-color);
+}
+
+.report-stat-widget.success {
+    border-left-color: var(--success-color);
+}
+
+.report-stat-widget.warning {
+    border-left-color: var(--warning-color);
+}
+
+.report-stat-widget.danger {
+    border-left-color: var(--danger-color);
+}
+
+.report-stat-widget h5 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+}
+
+.report-stat-widget h3 {
+    font-weight: 700;
+    margin-bottom: 0;
+}

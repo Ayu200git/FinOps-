@@ -1,0 +1,60 @@
+/**
+ * settings.css
+ * Specific styles for Settings page.
+ */
+
+.settings-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.theme-preview-card {
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+}
+
+.theme-preview-card.active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.theme-preview-header {
+    height: 12px;
+}
+
+.theme-preview-body {
+    height: 48px;
+    padding: 0.5rem;
+}
+
+.theme-preview-card.dark-preview .theme-preview-header {
+    background-color: #131926;
+}
+.theme-preview-card.dark-preview .theme-preview-body {
+    background-color: #0b0f19;
+}
+
+.theme-preview-card.light-preview .theme-preview-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+.theme-preview-card.light-preview .theme-preview-body {
+    background-color: #f8fafc;
+}
+
+.danger-zone-card {
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.danger-zone-card .card-header {
+    border-bottom: 1px solid rgba(239, 68, 68, 0.2) !important;
+    background-color: rgba(239, 68, 68, 0.05);
+    color: var(--danger-color);
+}
