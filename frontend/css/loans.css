@@ -1,0 +1,13 @@
+/* loans.css */
+.emi-box {
+    background: var(--bg-hover); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 1.25rem;
+    border-left: 4px solid var(--primary);
+}
+.emi-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:0.8px; color:var(--text-secondary); margin-bottom:0.25rem; }
+.emi-value { font-size:2rem; font-weight:800; color:var(--primary); letter-spacing:-1px; }
+
+.loan-progress { height:5px; border-radius:3px; background:var(--border); overflow:hidden; margin:4px 0; }
+.loan-progress .bar { height:100%; background:linear-gradient(90deg,var(--primary),#7c3aed); border-radius:3px; transition:width 0.4s ease; }
+
+.action-sm { padding:0.25rem 0.5rem !important; font-size:0.75rem !important; }

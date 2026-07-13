@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — FinOps Prime</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary min-vh-100 d-flex align-items-center justify-content-center" data-page="login">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-sm-10 col-md-7 col-lg-5 col-xl-4">
+
+             
+            <div class="text-center mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-primary rounded-3 mb-3" style="width:52px;height:52px;">
+                    <i class="fa-solid fa-landmark fs-4 text-white"></i>
+                </div>
+                <h4 class="fw-bold mb-1">FinOps Prime</h4>
+                <p class="text-secondary small">Enterprise Digital Lending Portal</p>
+            </div>
+ 
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h6 class="card-title fw-semibold mb-4">Sign in to your account</h6>
+
+                    <form id="loginForm" novalidate autocomplete="off">
+                         
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label fw-medium">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-envelope text-secondary"></i></span>
+                                <input type="email" class="form-control" id="emailInput"
+                                       placeholder="officer@finops.com" required>
+                            </div>
+                        </div>
+
+                         
+                        <div class="mb-4">
+                            <label for="passwordInput" class="form-label fw-medium">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-solid fa-lock text-secondary"></i></span>
+                                <input type="password" class="form-control" id="passwordInput"
+                                       placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                         
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label small" for="rememberMe">
+                                    Remember Me
+                                </label>
+                            </div>
+                            <a href="#" class="small text-primary text-decoration-none">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                         
+                        <button type="submit" class="btn btn-primary w-100 fw-semibold" id="loginBtn">
+                            Sign In <i class="fa-solid fa-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+ 
+            <div class="card mt-3 border-0 shadow-sm">
+                <div class="card-body p-3">
+                    <p class="small fw-semibold text-primary mb-2">
+                        <i class="fa-solid fa-circle-info me-1"></i> Demo Credentials
+                    </p>
+                    <table class="table table-sm table-borderless mb-0 small">
+                        <tbody>
+                            <tr>
+                                <td class="text-secondary ps-0">Admin</td>
+                                <td><code>admin@finops.com</code></td>
+                                <td><code>admin123</code></td>
+                                <td><span class="badge bg-danger">Admin</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-secondary ps-0">Clerk</td>
+                                <td><code>clerk@finops.com</code></td>
+                                <td><code>clerk123</code></td>
+                                <td><span class="badge bg-info">Clerk</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-secondary ps-0">Manager</td>
+                                <td><code>manager@finops.com</code></td>
+                                <td><code>manager123</code></td>
+                                <td><span class="badge bg-success">Manager</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>
