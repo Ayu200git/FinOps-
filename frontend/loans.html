@@ -1,106 +1,377 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Applications — FinOps Prime</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/loans.css">
 </head>
 <body data-page="loans">
-<div class="app-layout">
-    <aside id="sidebar-wrapper"></aside>
-    <div id="content-wrapper">
-        <header id="topbar-wrapper"></header>
-        <main class="page-main">
 
-            <!-- Filters -->
-            <div class="filter-bar">
-                <div class="row g-2 align-items-center">
-                    <div class="col-md-4"><div class="input-group"><span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span><input type="text" class="form-control" id="loanSearch" placeholder="Search loan ID, customer…"></div></div>
-                    <div class="col-md-2"><select class="form-select" id="loanStatusFilter"><option value="">All Status</option><option>Pending</option><option>Under Review</option><option>Approved</option><option>Rejected</option><option>Paid</option></select></div>
-                    <div class="col-md-2"><select class="form-select" id="loanTypeFilter"><option value="">All Types</option><option>Personal</option><option>Home</option><option>Vehicle</option><option>Business</option><option>Education</option></select></div>
-                    <div class="col-md-4 text-md-end">
-                        <button class="btn btn-primary" id="btnNewLoan"><i class="fa-solid fa-file-signature me-2"></i>New Loan Application</button>
+<!-- ══════════ APP SHELL (Bootstrap flex, no custom CSS) ══════════ -->
+<div class="d-flex vh-100 overflow-hidden">
+
+    <aside id="sidebar-wrapper"
+           class="d-none d-lg-flex flex-column flex-shrink-0 border-end bg-body-tertiary"
+           style="width:260px;"></aside>
+
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
+
+        <main class="flex-grow-1 overflow-auto p-3 p-md-4 bg-body-secondary">
+
+            <!-- ── Page header ── -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1">Loan Applications</h4>
+                    <p class="text-secondary small mb-0">File, review and track borrower loan applications.</p>
+                </div>
+                <button class="btn btn-primary" id="btnNewLoan">
+                    <i class="fa-solid fa-file-signature me-2"></i>New Application
+                </button>
+            </div>
+
+            <!-- ── Toolbar: search + filters ── -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
+                    <div class="row g-2 align-items-center">
+                        <div class="col-12 col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-body border-end-0">
+                                    <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 ps-0"
+                                       id="loanSearch" placeholder="Search loan ID, customer name or ID…">
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="loanTypeFilter">
+                                <option value="">All Types</option>
+                                <option>Personal</option>
+                                <option>Home</option>
+                                <option>Car</option>
+                                <option>Education</option>
+                                <option>Business</option>
+                                <option>Gold</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="loanStatusFilter">
+                                <option value="">All Status</option>
+                                <option>Pending</option>
+                                <option>Approved</option>
+                                <option>Rejected</option>
+                                <option>Disbursed</option>
+                                <option>Closed</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Table -->
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Loan Applications <span class="badge bg-primary-soft ms-2" id="loanCount">0</span></span>
+            <!-- ── Table card ── -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                    <span class="fw-semibold">
+                        <i class="fa-solid fa-hand-holding-dollar text-primary me-2"></i>Loan Register
+                        <span class="badge text-bg-primary ms-1" id="loanCount">0</span>
+                    </span>
                     <div id="loanPagination"></div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead><tr>
-                                <th>Loan ID</th><th>Customer</th><th>Type</th><th>Principal</th>
-                                <th>Rate / Term</th><th>EMI</th><th>Progress</th><th>Status</th><th class="text-end">Actions</th>
-                            </tr></thead>
-                            <tbody id="loanTableBody"></tbody>
-                        </table>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Loan ID</th>
+                                <th>Customer</th>
+                                <th>Loan Type</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-end">EMI</th>
+                                <th>Status</th>
+                                <th>Application Date</th>
+                                <th class="text-end pe-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loanTableBody"></tbody>
+                    </table>
                 </div>
             </div>
+
         </main>
     </div>
 </div>
 
-<!-- New Loan Modal -->
-<div class="modal fade" id="loanModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+<!-- ══════════ NEW LOAN MODAL (dynamic form) ══════════ -->
+<div class="modal fade" id="loanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow">
+
             <div class="modal-header">
-                <h5 class="modal-title">New Loan Application</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title"><i class="fa-solid fa-file-signature text-primary me-2"></i>New Loan Application</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <form id="loanForm" novalidate>
                 <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Customer *</label><select class="form-select" id="lCustomer" required></select></div>
-                    <div class="row g-3 mb-3">
-                        <div class="col-6"><label class="form-label">Loan Type</label><select class="form-select" id="lType"><option>Personal</option><option>Home</option><option>Vehicle</option><option>Business</option><option>Education</option></select></div>
-                        <div class="col-6"><label class="form-label">Purpose</label><input class="form-control" id="lPurpose" placeholder="e.g. Home Renovation"></div>
+
+                    <!-- ── Customer ── -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-user me-1"></i>Customer
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-semibold" for="lCustomer">Select Customer <span class="text-danger">*</span></label>
+                        <select class="form-select" id="lCustomer" required></select>
+                        <div class="invalid-feedback">Please select a customer.</div>
+                    </div>
+                    <!-- Auto-filled read-only info -->
+                    <div class="d-none border rounded-3 p-2 bg-body-tertiary mb-3" id="lCustInfo">
+                        <div class="row g-2 small">
+                            <div class="col-sm-6"><span class="text-secondary">Email:</span> <span class="fw-semibold" id="lciEmail">—</span></div>
+                            <div class="col-sm-6"><span class="text-secondary">Phone:</span> <span class="fw-semibold" id="lciPhone">—</span></div>
+                            <div class="col-sm-6"><span class="text-secondary">Credit Score:</span> <span id="lciCredit">—</span></div>
+                            <div class="col-sm-6"><span class="text-secondary">Status:</span> <span id="lciStatus">—</span></div>
+                        </div>
+                    </div>
+
+                    <!-- ── Loan Details ── -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-hand-holding-dollar me-1"></i>Loan Details
                     </div>
                     <div class="row g-3 mb-3">
-                        <div class="col-6"><label class="form-label">Principal Amount (₹) *</label><input type="number" class="form-control" id="lAmount" min="10000" required></div>
-                        <div class="col-6"><label class="form-label">Annual Interest Rate (%) *</label><input type="number" class="form-control" id="lRate" step="0.05" min="1" max="36" required></div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lType">Loan Type</label>
+                            <select class="form-select" id="lType">
+                                <option>Personal</option>
+                                <option>Home</option>
+                                <option>Car</option>
+                                <option>Education</option>
+                                <option>Business</option>
+                                <option>Gold</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lPurpose">Purpose / Remarks</label>
+                            <input class="form-control" id="lPurpose" placeholder="e.g. Home Renovation">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lAmount">Loan Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="lAmount" min="10000" required>
+                            <div class="invalid-feedback">Minimum ₹10,000.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lRate">Interest Rate (%) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="lRate" step="0.05" min="1" max="36" required>
+                            <div class="invalid-feedback">Enter a valid rate.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lDuration">Duration (Months)</label>
+                            <select class="form-select" id="lDuration">
+                                <option>6</option><option>12</option><option>18</option>
+                                <option selected>24</option><option>36</option><option>48</option>
+                                <option>60</option><option>84</option><option>120</option>
+                                <option>180</option><option>240</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-4"><label class="form-label">Loan Tenure (Months)</label>
-                        <select class="form-select" id="lDuration"><option>6</option><option>12</option><option>18</option><option selected>24</option><option>36</option><option>48</option><option>60</option><option>84</option><option>120</option><option>180</option><option>240</option></select>
-                    </div>
-                    <!-- Live EMI Preview -->
-                    <div class="emi-box">
-                        <div class="emi-label">Monthly Installment (EMI)</div>
-                        <div class="emi-value" id="emiDisplay">₹0.00</div>
-                        <div class="d-flex justify-content-between mt-2 pt-2" style="border-top:1px solid var(--border);">
+
+                    <!-- ── Live EMI Preview ── -->
+                    <div class="rounded-3 p-3 bg-body-tertiary border-start border-4 border-primary mb-3">
+                        <div class="text-secondary text-uppercase fw-semibold" style="font-size:.7rem;letter-spacing:.8px;">Monthly Installment (EMI)</div>
+                        <div class="fs-3 fw-bold text-primary" id="emiDisplay">₹0.00</div>
+                        <div class="d-flex justify-content-between mt-2 pt-2 border-top">
                             <div class="text-center">
-                                <div class="fs-8 text-secondary">Total Payable</div>
-                                <div class="fs-7 fw-600" style="color:var(--text-primary);" id="emiTotal">₹0.00</div>
+                                <div class="text-secondary" style="font-size:.72rem;">Total Payable</div>
+                                <div class="fw-semibold small" id="emiTotal">₹0.00</div>
                             </div>
                             <div class="text-center">
-                                <div class="fs-8 text-secondary">Total Interest</div>
-                                <div class="fs-7 fw-600" style="color:var(--danger);" id="emiInterest">₹0.00</div>
+                                <div class="text-secondary" style="font-size:.72rem;">Total Interest</div>
+                                <div class="fw-semibold small text-danger" id="emiInterest">₹0.00</div>
                             </div>
                             <div class="text-center">
-                                <div class="fs-8 text-secondary">Duration</div>
-                                <div class="fs-7 fw-600" style="color:var(--text-primary);" id="emiDuration">0 Months</div>
+                                <div class="text-secondary" style="font-size:.72rem;">Duration</div>
+                                <div class="fw-semibold small" id="emiDuration">0 Months</div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- ── Financial Information (common) ── -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-wallet me-1"></i>Financial Information
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lIncome">Monthly Income (₹)</label>
+                            <input type="number" class="form-control" id="lIncome" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lExistingEmi">Existing EMI (₹)</label>
+                            <input type="number" class="form-control" id="lExistingEmi" min="0">
+                        </div>
+                    </div>
+
+                    <!-- ── Status ── -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-flag me-1"></i>Status
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lStatus">Loan Status</label>
+                            <select class="form-select" id="lStatus">
+                                <option selected>Pending</option>
+                                <option>Approved</option>
+                                <option>Rejected</option>
+                                <option>Disbursed</option>
+                                <option>Closed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- ══ Dynamic type-specific fields ══ -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-list-check me-1"></i>Type-specific Details
+                    </div>
+
+                    <!-- Personal -->
+                    <div class="type-fields row g-3 mb-2" data-type="Personal">
+                        <div class="col-md-12">
+                            <label class="form-label small fw-semibold" for="lEmployer">Employer / Company</label>
+                            <input class="form-control" id="lEmployer" placeholder="e.g. Infosys Ltd.">
+                        </div>
+                    </div>
+
+                    <!-- Home -->
+                    <div class="type-fields row g-3 mb-2 d-none" data-type="Home">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lPropValue">Property Value (₹)</label>
+                            <input type="number" class="form-control" id="lPropValue" min="0">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lDownPayment">Down Payment (₹)</label>
+                            <input type="number" class="form-control" id="lDownPayment" min="0">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold" for="lPropAddress">Property Address</label>
+                            <input class="form-control" id="lPropAddress">
+                        </div>
+                    </div>
+
+                    <!-- Car -->
+                    <div class="type-fields row g-3 mb-2 d-none" data-type="Car">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lCarModel">Car Model</label>
+                            <input class="form-control" id="lCarModel" placeholder="e.g. Hyundai Creta">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lOnRoadPrice">On-road Price (₹)</label>
+                            <input type="number" class="form-control" id="lOnRoadPrice" min="0">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lDealer">Dealer Name</label>
+                            <input class="form-control" id="lDealer">
+                        </div>
+                    </div>
+
+                    <!-- Education -->
+                    <div class="type-fields row g-3 mb-2 d-none" data-type="Education">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="lCollege">College / University</label>
+                            <input class="form-control" id="lCollege">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold" for="lCourse">Course</label>
+                            <input class="form-control" id="lCourse" placeholder="e.g. B.Tech">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold" for="lCourseDuration">Course Duration</label>
+                            <input class="form-control" id="lCourseDuration" placeholder="e.g. 4 Years">
+                        </div>
+                    </div>
+
+                    <!-- Business -->
+                    <div class="type-fields row g-3 mb-2 d-none" data-type="Business">
+                        <div class="col-md-5">
+                            <label class="form-label small fw-semibold" for="lBizName">Business Name</label>
+                            <input class="form-control" id="lBizName">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lTurnover">Annual Turnover (₹)</label>
+                            <input type="number" class="form-control" id="lTurnover" min="0">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small fw-semibold" for="lGst">GST Number</label>
+                            <input class="form-control" id="lGst">
+                        </div>
+                    </div>
+
+                    <!-- Gold -->
+                    <div class="type-fields row g-3 mb-2 d-none" data-type="Gold">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lGoldWeight">Gold Weight (grams)</label>
+                            <input type="number" class="form-control" id="lGoldWeight" min="0" step="0.1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lGoldPurity">Purity (Karat)</label>
+                            <select class="form-select" id="lGoldPurity">
+                                <option value="">—</option>
+                                <option>18K</option><option>22K</option><option>24K</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold" for="lGoldItem">Item Description</label>
+                            <input class="form-control" id="lGoldItem" placeholder="e.g. Necklace">
+                        </div>
+                    </div>
+
+                    <!-- ── Documents  ── -->
+                    <div class="fw-semibold text-uppercase text-secondary mt-3 mb-2" style="font-size:.72rem;letter-spacing:.6px;">
+                        <i class="fa-solid fa-paperclip me-1"></i>Documents <span class="text-secondary fw-normal text-lowercase">(optional — demo)</span>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="docAadhaar">Aadhaar</label>
+                            <input type="file" class="form-control form-control-sm loan-doc" id="docAadhaar" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="docPan">PAN</label>
+                            <input type="file" class="form-control form-control-sm loan-doc" id="docPan" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="docSalary">Salary Slip</label>
+                            <input type="file" class="form-control form-control-sm loan-doc" id="docSalary" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="docBank">Bank Statement</label>
+                            <input type="file" class="form-control form-control-sm loan-doc" id="docBank" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+                    </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">File Application</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-arrow-up me-2"></i>File Application</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- ══════════ DETAIL OFFCANVAS ══════════ -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="loanDetailCanvas" style="width:440px;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title"><i class="fa-solid fa-file-invoice-dollar text-primary me-2"></i>Loan Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="loanDetailBody"></div>
+</div>
+
+ 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/storage.js"></script><script src="js/utils.js"></script><script src="js/app.js"></script><script src="js/loans.js"></script>
-</body></html>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/loans.js"></script>
+</body>
+</html>

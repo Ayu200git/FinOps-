@@ -1,75 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customers — FinOps Prime</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body data-page="customers">
-<div class="app-layout">
-    <aside id="sidebar-wrapper" class="bg-body-tertiary"></aside>
-    <div id="content-wrapper">
-        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
-        <main class="p-3 p-md-4">
 
-            <!-- Filters -->
+ 
+<div class="d-flex vh-100 overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar-wrapper"
+           class="d-none d-lg-flex flex-column flex-shrink-0 border-end bg-body-tertiary"
+           style="width:260px;"></aside>
+
+     
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
+
+         
+        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
+
+        
+        <main class="flex-grow-1 overflow-auto p-3 p-md-4 bg-body-secondary">
+
+             
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1">Customer Management</h4>
+                    <p class="text-secondary small mb-0">Manage borrower profiles, KYC status and account balances.</p>
+                </div>
+                <button class="btn btn-primary" id="btnNewCustomer">
+                    <i class="fa-solid fa-user-plus me-2"></i>Add Customer
+                </button>
+            </div>
+
+           
             <div class="card border-0 shadow-sm mb-3">
-                <div class="card-body py-2">
+                <div class="card-body">
                     <div class="row g-2 align-items-center">
-                        <div class="col-md-5">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                <input type="text" class="form-control" id="custSearch" placeholder="Search name, email, phone, ID…">
+                        <div class="col-12 col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-body border-end-0">
+                                    <i class="fa-solid fa-magnifying-glass text-secondary"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 ps-0"
+                                       id="custSearch" placeholder="Search name, email, phone, city or ID…">
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="custStatusFilter">
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="custStatusFilter">
                                 <option value="">All Status</option>
                                 <option>Active</option>
                                 <option>Suspended</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <select class="form-select form-select-sm" id="custKycFilter">
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="custKycFilter">
                                 <option value="">All KYC</option>
                                 <option>Verified</option>
                                 <option>Pending</option>
                                 <option>Rejected</option>
                             </select>
                         </div>
-                        <div class="col-md-3 text-md-end">
-                            <button class="btn btn-primary btn-sm" id="btnNewCustomer">
-                                <i class="fa-solid fa-user-plus me-1"></i>New Customer
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Table Card -->
+            <!-- ── Table card ── -->
             <div class="card border-0 shadow-sm">
-                <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center py-2">
-                    <span class="fw-semibold small">
-                        Customer Directory
+                <div class="card-header bg-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                    <span class="fw-semibold">
+                        <i class="fa-solid fa-users text-primary me-2"></i>Customer Directory
                         <span class="badge text-bg-primary ms-1" id="custCount">0</span>
                     </span>
                     <div id="custPagination"></div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
-                                <th>ID</th>
+                                <th class="ps-3">ID</th>
                                 <th>Name / Email</th>
                                 <th>City</th>
                                 <th>Credit Score</th>
                                 <th>KYC</th>
                                 <th>Status</th>
-                                <th>Balance</th>
+                                <th class="text-end">Balance</th>
                                 <th>Joined</th>
-                                <th class="text-end">Actions</th>
+                                <th class="text-end pe-3">Actions</th>
                             </tr>
                         </thead>
                         <tbody id="custTableBody"></tbody>
@@ -81,92 +102,115 @@
     </div>
 </div>
 
-<!-- Slide-out Detail Panel -->
-<div class="panel-overlay" id="panelOverlay"></div>
-<div class="detail-panel shadow-lg" id="custDetailPanel">
-    <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-body-tertiary">
-        <span class="fw-semibold">Customer Details</span>
-        <button class="btn btn-sm btn-outline-secondary" id="closePanelBtn"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="p-3" id="custDetailBody"></div>
-</div>
-
-<!-- Customer Modal -->
-<div class="modal fade" id="custModal" tabindex="-1">
+<!-- ══════════ ADD / EDIT MODAL ══════════ -->
+<div class="modal fade" id="custModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div class="modal-content border-0 shadow">
+
             <div class="modal-header">
-                <h5 class="modal-title" id="custModalTitle">New Customer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="custModalTitle">
+                    <i class="fa-solid fa-user-pen text-primary me-2"></i>New Customer
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <form id="custForm" novalidate>
                 <div class="modal-body">
                     <input type="hidden" id="editCustId">
+
                     <div class="row g-3">
+                         
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Full Name *</label>
-                            <input class="form-control form-control-sm" id="fName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Email Address *</label>
-                            <input type="email" class="form-control form-control-sm" id="fEmail" required>
+                            <label class="form-label small fw-semibold" for="fName">Full Name <span class="text-danger">*</span></label>
+                            <input class="form-control" id="fName" required>
+                            <div class="invalid-feedback">Full name is required.</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Phone *</label>
-                            <input class="form-control form-control-sm" id="fPhone" required>
+                            <label class="form-label small fw-semibold" for="fEmail">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="fEmail" required>
+                            <div class="invalid-feedback">A valid email is required.</div>
+                        </div>
+
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fPhone">Phone <span class="text-danger">*</span></label>
+                            <input class="form-control" id="fPhone" required>
+                            <div class="invalid-feedback">Phone number is required.</div>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Date of Birth</label>
-                            <input type="date" class="form-control form-control-sm" id="fDob">
+                            <label class="form-label small fw-semibold" for="fDob">Date of Birth</label>
+                            <input type="date" class="form-control" id="fDob">
                         </div>
-                        <div class="col-12">
-                            <label class="form-label small fw-semibold">Address</label>
-                            <input class="form-control form-control-sm" id="fAddress">
+
+                         
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fCity">City</label>
+                            <input class="form-control" id="fCity">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">City</label>
-                            <input class="form-control form-control-sm" id="fCity">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fPincode">Pincode</label>
+                            <input class="form-control" id="fPincode" maxlength="6" inputmode="numeric">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Pincode</label>
-                            <input class="form-control form-control-sm" id="fPincode" maxlength="6">
+
+                        
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fCreditScore">Credit Score</label>
+                            <input type="number" class="form-control" id="fCreditScore" min="300" max="900" placeholder="300 – 900">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Credit Score</label>
-                            <input type="number" class="form-control form-control-sm" id="fCreditScore" min="300" max="900" placeholder="300–900">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fBalance">Balance (₹)</label>
+                            <input type="number" class="form-control" id="fBalance" min="0" step="0.01">
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Balance (₹)</label>
-                            <input type="number" class="form-control form-control-sm" id="fBalance" min="0">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">Status</label>
-                            <select class="form-select form-select-sm" id="fStatus">
+ 
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fStatus">Status</label>
+                            <select class="form-select" id="fStatus">
                                 <option>Active</option>
                                 <option>Suspended</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small fw-semibold">KYC Status</label>
-                            <select class="form-select form-select-sm" id="fKycStatus">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold" for="fKycStatus">KYC Status</label>
+                            <select class="form-select" id="fKycStatus">
                                 <option>Pending</option>
                                 <option>Verified</option>
                                 <option>Rejected</option>
                             </select>
                         </div>
+
+                         
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold" for="fAddress">Address</label>
+                            <input class="form-control" id="fAddress">
+                        </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Save Customer</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Save Customer
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- ══════════ DETAIL OFFCANVAS ══════════ -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="custDetailCanvas" style="width:420px;">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title"><i class="fa-solid fa-id-card text-primary me-2"></i>Customer Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body" id="custDetailBody"></div>
+</div>
+ 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/storage.js"></script><script src="js/utils.js"></script><script src="js/app.js"></script><script src="js/customers.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/customers.js"></script>
 </body>
 </html>

@@ -186,7 +186,13 @@ const FinOpsStorage = {
         const amt    = parseFloat(data.amount);
         const rate   = parseFloat(data.interestRate);
         const dur    = parseInt(data.durationMonths);
-        const obj    = { id: `LOAN-${next}`, customerId: data.customerId, customerName: cust.name, loanType: data.loanType || 'Personal', amount: amt, interestRate: rate, durationMonths: dur, monthlyInstallment: parseFloat(this.calculateEMI(amt, rate, dur)), status: 'Pending', startDate: data.startDate || new Date().toISOString().split('T')[0], paymentsMade: 0, remainingAmount: amt, purpose: data.purpose || '', createdBy: s ? s.id : 'USR-001', approvedBy: null };
+        const obj    = { id: `LOAN-${next}`, customerId: data.customerId, customerName: cust.name, loanType: data.loanType || 'Personal', amount: amt, interestRate: rate, durationMonths: dur, monthlyInstallment: parseFloat(this.calculateEMI(amt, rate, dur)), status: data.status || 'Pending', startDate: data.startDate || new Date().toISOString().split('T')[0], paymentsMade: 0, remainingAmount: amt, purpose: data.purpose || '',
+            monthlyIncome: parseFloat(data.monthlyIncome) || 0,   // financial info
+            existingEMI:   parseFloat(data.existingEMI)   || 0,
+            creditScore:   cust.creditScore || 0,                 // snapshot from customer
+            details:       data.details || {},                    // dynamic type-specific fields
+            createdBy: s ? s.id : 'USR-001',
+            approvedBy: (data.status === 'Approved' || data.status === 'Disbursed') ? (s ? s.id : null) : null };
         list.push(obj);
         this.saveLoans(list);
         if (s) this.addActivityLog(s.id, s.name, 'CREATE', 'Loans', `Filed loan application ${obj.id}.`);
