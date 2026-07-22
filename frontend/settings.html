@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Settings - FinOps Prime</title>
+    <title>Settings Center — FinOps Prime</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome CSS -->
@@ -14,118 +14,234 @@
 </head>
 <body data-page="settings">
 
-    <div class="app-layout">
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar-wrapper"></aside>
+<div class="d-flex vh-100 overflow-hidden">
 
-        <!-- Content Area -->
-        <div id="content-wrapper">
-            <!-- Navigation Header -->
-            <header id="topbar-wrapper"></header>
+    <!-- Sidebar Navigation (rendered dynamically by FinOpsUtils) -->
+    <aside id="sidebar-wrapper"
+           class="d-none d-lg-flex flex-column flex-shrink-0 border-end bg-body-tertiary"
+           style="width:260px;"></aside>
 
-            <!-- Configuration Portal -->
-            <main class="container-fluid p-4">
-                
-                <div class="row g-4 justify-content-center" style="max-width: 1000px; margin: 0 auto;">
-                    <div class="col-md-7 col-lg-8">
-                        
-                        <!-- System Settings Card -->
-                        <div class="card mb-4">
-                            <div class="card-header border-0 py-3">
-                                <h5 class="mb-0">System Preferences</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                                <form id="systemSettingsForm">
-                                    <div class="settings-section-title">FinOps Parameter Configurations</div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="inputCompanyName" class="form-label font-semibold text-white fs-7">Portal Platform Name</label>
-                                        <input type="text" class="form-control" id="inputCompanyName" required>
-                                        <small class="text-secondary fs-8 mt-1 d-block">Changes the logo brand name in the sidebar.</small>
-                                    </div>
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
 
-                                    <div class="row g-3 mb-4">
-                                        <div class="col-6">
-                                            <label for="inputCurrency" class="form-label font-semibold text-white fs-7">Global Currency Sign</label>
-                                            <select class="form-select" id="inputCurrency">
-                                                <option value="$">USD ($)</option>
-                                                <option value="€">EUR (€)</option>
-                                                <option value="£">GBP (£)</option>
-                                                <option value="₹">INR (₹)</option>
-                                                <option value="¥">JPY (¥)</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-6">
-                                            <label for="inputDefaultRate" class="form-label font-semibold text-white fs-7">Base Interest Rate (%)</label>
-                                            <input type="number" class="form-control" id="inputDefaultRate" step="0.05" min="0" required>
-                                        </div>
-                                    </div>
+        <!-- Topbar Wrapper (rendered dynamically by FinOpsUtils) -->
+        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
 
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="fa-solid fa-floppy-disk me-2"></i>Save Configuration
-                                    </button>
-                                </form>
+        <!-- Main Content Area -->
+        <main class="flex-grow-1 overflow-y-auto p-4 bg-body-secondary position-relative d-flex flex-column justify-content-between">
+
+            <div>
+                <!-- Breadcrumb Navigation -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-3 small">
+                        <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Settings Center</li>
+                    </ol>
+                </nav>
+
+                <!-- Page Title Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h5 class="fw-bold mb-0">Settings Center</h5>
+                        <small class="text-secondary">Configure system behavior, loan products, and business rules</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-body border py-2 px-3 small shadow-sm text-body">
+                            <i class="fa-solid fa-user-shield me-1 text-primary"></i>
+                            Admin Profile: <strong class="text-primary" id="settingsAdminUser">Ayush Sharma</strong>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Settings Inner Row -->
+                <div class="row g-4 mb-5">
+                    
+                    <!-- Left Settings Navigation (col-md-3) -->
+                    <div class="col-12 col-md-3">
+                        <div class="card border-0 shadow-sm bg-body">
+                            <div class="list-group list-group-flush" id="settingsNavMenu">
+                                <button class="list-group-item list-group-item-action active border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2" data-module="general">
+                                    <i class="fa-solid fa-sliders fa-fw text-primary"></i> General Settings
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="security">
+                                    <i class="fa-solid fa-lock fa-fw"></i> Security Policy
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="loan">
+                                    <i class="fa-solid fa-hand-holding-dollar fa-fw"></i> Loan Configuration
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="kyc">
+                                    <i class="fa-solid fa-passport fa-fw"></i> KYC Requirements
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="branch">
+                                    <i class="fa-solid fa-building-columns fa-fw"></i> Branch Settings
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="notifications">
+                                    <i class="fa-solid fa-bell fa-fw"></i> Notifications Rules
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="users">
+                                    <i class="fa-solid fa-user-gear fa-fw"></i> User Roles & Access
+                                </button>
+                                <button class="list-group-item list-group-item-action border-0 rounded-0 py-3 fw-semibold d-flex align-items-center gap-2 text-secondary" data-module="audit">
+                                    <i class="fa-solid fa-clock-rotate-left fa-fw"></i> System Audit Logs
+                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Theme Chooser Card -->
-                        <div class="card mb-4">
-                            <div class="card-header border-0 py-3">
-                                <h5 class="mb-0">Theme Customization</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                                <div class="settings-section-title">Interface Theme Choice</div>
-                                <div class="row g-3">
-                                    <div class="col-6">
-                                        <div class="theme-preview-card dark-preview active" id="themeSelectDark">
-                                            <div class="theme-preview-header"></div>
-                                            <div class="theme-preview-body d-flex align-items-center justify-content-between">
-                                                <span class="text-white fs-7 font-medium">Dark (Default)</span>
-                                                <i class="fa-solid fa-circle-check text-indigo" id="darkCheckIcon"></i>
-                                            </div>
-                                        </div>
+                    <!-- Right Settings Configuration Form Panel (col-md-9) -->
+                    <div class="col-12 col-md-9">
+                        <form id="settingsMasterForm">
+                            <div id="settingsModuleContent">
+                                
+                                <!-- ─── General Settings Cards (Default Active Module) ─── -->
+                                
+                                <!-- Card 1: Organization Information -->
+                                <div class="card border-0 shadow-sm mb-4 bg-body">
+                                    <div class="card-header bg-transparent border-bottom py-3">
+                                        <h6 class="fw-bold mb-0 text-primary">
+                                            <i class="fa-solid fa-building me-2"></i>Organization Profile
+                                        </h6>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="theme-preview-card light-preview" id="themeSelectLight">
-                                            <div class="theme-preview-header"></div>
-                                            <div class="theme-preview-body d-flex align-items-center justify-content-between">
-                                                <span class="text-dark fs-7 font-medium">Light Theme</span>
-                                                <i class="fa-solid fa-circle-check text-secondary d-none" id="lightCheckIcon"></i>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Organization Name</label>
+                                                <input type="text" class="form-control form-control-sm" id="cfgOrgName" value="FinOps Prime" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Logo Text / Brand Icon</label>
+                                                <input type="text" class="form-control form-control-sm" id="cfgBrandText" value="FinOps Prime" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Support Contact Email</label>
+                                                <input type="email" class="form-control form-control-sm" id="cfgSupportEmail" value="user@example.com" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Support Helpline Phone</label>
+                                                <input type="text" class="form-control form-control-sm" id="cfgSupportPhone" value="+91 1800-456-7890" required>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <!-- Danger Zone Card -->
-                        <div class="card danger-zone-card">
-                            <div class="card-header py-3">
-                                <h5 class="mb-0"><i class="fa-solid fa-triangle-exclamation me-2"></i>System Danger Zone</h5>
-                            </div>
-                            <div class="card-body">
-                                <h6 class="text-white font-semibold mb-2">Reset Portal Database</h6>
-                                <p class="text-secondary fs-7 mb-3">Clears all custom customer sheets, active loan logs, and user sessions. Will reload and re-seed the workspace with default system profiles.</p>
-                                <button class="btn btn-danger btn-sm px-3" id="resetSystemBtn">
-                                    <i class="fa-solid fa-rotate me-2"></i>Reset Database
-                                </button>
-                            </div>
-                        </div>
+                                <!-- Card 2: Regional Settings -->
+                                <div class="card border-0 shadow-sm mb-4 bg-body">
+                                    <div class="card-header bg-transparent border-bottom py-3">
+                                        <h6 class="fw-bold mb-0 text-primary">
+                                            <i class="fa-solid fa-globe me-2"></i>Regional & Localization Settings
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Currency Sign</label>
+                                                <select class="form-select form-select-sm" id="cfgCurrency">
+                                                    <option value="₹" selected>INR (₹)</option>
+                                                    <option value="$">USD ($)</option>
+                                                    <option value="€">EUR (€)</option>
+                                                    <option value="£">GBP (£)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Time Zone</label>
+                                                <select class="form-select form-select-sm" id="cfgTimeZone">
+                                                    <option value="Asia/Kolkata" selected>IST (UTC+05:30) — India</option>
+                                                    <option value="UTC">UTC (UTC+00:00) — GMT</option>
+                                                    <option value="America/New_York">EST (UTC-05:00) — New York</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Date Format</label>
+                                                <select class="form-select form-select-sm" id="cfgDateFormat">
+                                                    <option value="dd-mm-yyyy" selected>DD-MM-YYYY (e.g. 22-07-2026)</option>
+                                                    <option value="yyyy-mm-dd">YYYY-MM-DD (e.g. 2026-07-22)</option>
+                                                    <option value="mm/dd/yyyy">MM/DD/YYYY (e.g. 07/22/2026)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold">Preferred Language</label>
+                                                <select class="form-select form-select-sm" id="cfgLanguage">
+                                                    <option value="en" selected>English (UK)</option>
+                                                    <option value="hi">Hindi</option>
+                                                    <option value="es">Spanish</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <!-- Card 3: Appearance Preferences -->
+                                <div class="card border-0 shadow-sm bg-body">
+                                    <div class="card-header bg-transparent border-bottom py-3">
+                                        <h6 class="fw-bold mb-0 text-primary">
+                                            <i class="fa-solid fa-palette me-2"></i>Portal Theme & Appearance
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3 align-items-center">
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold d-block">Interface Color Theme</label>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="cfgTheme" id="themeRadioDark" value="dark" checked>
+                                                    <label class="form-check-label small fw-medium" for="themeRadioDark">
+                                                        <i class="fa-solid fa-moon me-1 text-primary"></i> Dark (Recommended)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="cfgTheme" id="themeRadioLight" value="light">
+                                                    <label class="form-check-label small fw-medium" for="themeRadioLight">
+                                                        <i class="fa-solid fa-sun me-1 text-warning"></i> Light Mode
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small fw-semibold d-block">System Display Density</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="cfgCompactMode">
+                                                    <label class="form-check-label small" for="cfgCompactMode">Enable compact layout grid rows</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Bottom Sticky / Fixed Action bar -->
+            <div class="card border-0 shadow-sm mt-auto bg-body-tertiary">
+                <div class="card-body py-3 d-flex flex-wrap align-items-center justify-content-between gap-3 border-top">
+                    <div class="small text-secondary">
+                        <i class="fa-solid fa-clock me-1 text-primary"></i> Last Saved: <span id="cfgLastSavedTime" class="fw-semibold text-body">Today</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="btnResetSettings">
+                            <i class="fa-solid fa-arrow-rotate-left me-1"></i> Reset Config
+                        </button>
+                        <button type="button" class="btn btn-outline-primary btn-sm px-3" id="btnExportSettings">
+                            <i class="fa-solid fa-file-export me-1"></i> Export Config
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm px-4" id="btnSaveAllSettings">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                        </button>
                     </div>
                 </div>
+            </div>
 
-            </main>
-        </div>
+        </main>
     </div>
+</div>
 
-    <!-- Core Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- App Logic Scripts -->
-    <script src="js/storage.js"></script>
-    <script src="js/utils.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/settings.js"></script>
+<!-- Core Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- App Logic Scripts -->
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/app.js"></script>
+<script src="js/settings.js"></script>
 </body>
 </html>
