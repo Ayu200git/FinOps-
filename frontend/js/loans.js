@@ -1,9 +1,4 @@
-/**
- * loans.js — Loan Applications (Bootstrap 5 + jQuery, no custom CSS)
- * Flow: render table → new application via modal (dynamic form + live EMI)
- *       → save to localStorage → refresh → search/filter → approve/reject/pay
- *       → pagination → view detail (offcanvas)
- */
+ 
 $(document).ready(function () {
 
     FinOpsUtils.renderShell('loans');
@@ -12,9 +7,9 @@ $(document).ready(function () {
     const detailPanel = new bootstrap.Offcanvas('#loanDetailCanvas');
 
     let currentPage = 1;
-    const PER_PAGE  = 5;   // shows pagination with the seed loans
+    const PER_PAGE  = 5;    
 
-    /* ════════════════ STATUS BADGE (all lifecycle states) ════════════════ */
+    /* ════════════════ STATUS BADGE   ════════════════ */
     function loanBadge(status) {
         const map = {
             Pending: 'warning', 'Under Review': 'primary', Approved: 'success',
@@ -118,7 +113,7 @@ $(document).ready(function () {
             const canApprove = session && (session.role === 'Admin' || session.role === 'Manager');
 
             $('#loanTableBody').html(data.map(l => {
-                // Actions by status + role
+                 
                 let actions = `<button class="btn btn-outline-secondary btn-view" data-id="${l.id}" title="View"><i class="fa-solid fa-eye"></i></button>`;
                 if (l.status === 'Pending' || l.status === 'Under Review') {
                     if (canApprove) {
@@ -329,8 +324,7 @@ $(document).ready(function () {
                 <span class="fw-semibold text-end">${value}</span>
             </div>`;
     }
-
-    /* ════════════════ INIT ════════════════ */
+ 
     if (new URLSearchParams(window.location.search).get('action') === 'new') {
         $('#btnNewLoan').trigger('click');
     }
