@@ -1,8 +1,3 @@
-/**
- * reports.css
- * Specific styles for Reports page.
- */
-
 .chart-report-wrapper {
     min-height: 280px;
     position: relative;
@@ -40,4 +35,21 @@
 .report-stat-widget h3 {
     font-weight: 700;
     margin-bottom: 0;
+}
+
+/* Print Styles */
+@media print {
+    aside, nav, header, footer, .card-header, #reportFilterForm, .report-tab-btn, .btn, #toastContainer {
+        display: none !important;
+    }
+    main, .card, .table-responsive, table {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+    body {
+        background-color: #fff !important;
+        color: #000 !important;
+    }
 }
