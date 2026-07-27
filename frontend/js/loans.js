@@ -110,16 +110,21 @@ $(document).ready(function () {
             );
         } else {
             const session    = FinOpsStorage.getSession();
-            const canApprove = session && (session.role === 'Admin' || session.role === 'Manager');
+            const userRole   = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
+            const canApprove = (userRole === 'Admin' || userRole === 'Branch Manager');
+            const canRecommend = (userRole === 'Branch Officer');
 
             $('#loanTableBody').html(data.map(l => {
-                 
-                let actions = `<button class="btn btn-outline-secondary btn-view" data-id="${l.id}" title="View"><i class="fa-solid fa-eye"></i></button>`;
+                let actions = `<button class="btn btn-outline-secondary btn-view" data-id="${l.id}" title="View Details"><i class="fa-solid fa-eye"></i></button>`;
+                
                 if (l.status === 'Pending' || l.status === 'Under Review') {
                     if (canApprove) {
                         actions += `
-                            <button class="btn btn-outline-success btn-approve" data-id="${l.id}" title="Approve"><i class="fa-solid fa-check"></i></button>
-                            <button class="btn btn-outline-danger btn-reject" data-id="${l.id}" title="Reject"><i class="fa-solid fa-xmark"></i></button>`;
+                            <button class="btn btn-outline-success btn-approve" data-id="${l.id}" title="Final Approve"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn btn-outline-danger btn-reject" data-id="${l.id}" title="Final Reject"><i class="fa-solid fa-xmark"></i></button>`;
+                    } else if (canRecommend) {
+                        actions += `
+                            <button class="btn btn-outline-info btn-recommend" data-id="${l.id}" title="Recommend Approval"><i class="fa-solid fa-thumbs-up"></i></button>`;
                     }
                 } else if (l.status === 'Approved') {
                     actions += `<button class="btn btn-outline-primary btn-pay" data-id="${l.id}" title="Pay EMI"><i class="fa-solid fa-money-bill-wave"></i></button>`;
@@ -209,7 +214,14 @@ $(document).ready(function () {
         }
     });
 
-    /* ════════════════ ACTIONS: Approve / Reject / Pay ════════════════ */
+    $(document).on('click', '.btn-recommend', function () {
+        const id = $(this).data('id');
+        if (!confirm(`Recommend loan ${id} for Branch Manager approval?`)) return;
+        FinOpsStorage.updateLoanStatus(id, 'Under Review');
+        FinOpsUtils.showAlert(`Loan ${id} verified & recommended for Branch Manager approval.`, 'info');
+        render();
+    });
+
     $(document).on('click', '.btn-approve', function () {
         const id = $(this).data('id');
         if (!confirm(`Approve loan ${id}? Funds will be disbursed to the customer account.`)) return;

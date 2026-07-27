@@ -4,6 +4,14 @@ $(document).ready(function () {
     const settings = window.FinOpsStorage ? window.FinOpsStorage.getSettings() : {};
     $('html').attr('data-bs-theme', settings.theme || 'dark');
  
+    $(document).on('click', '.btn-demo-fill', function () {
+        const email = $(this).data('email');
+        const pass  = $(this).data('pass');
+        $('#emailInput').val(email);
+        $('#passwordInput').val(pass);
+        window.FinOpsUtils.showAlert(`Filled credentials for ${email}`, 'info');
+    });
+
     $('#loginForm').on('submit', function (e) {
         e.preventDefault();
         const email    = $('#emailInput').val().trim();
@@ -24,6 +32,6 @@ $(document).ready(function () {
                 window.FinOpsUtils.showAlert(result.message, 'error');
                 btn.prop('disabled', false).html('Sign In <i class="fa-solid fa-arrow-right ms-2"></i>');
             }
-        }, 500);
+        }, 300);
     });
 });

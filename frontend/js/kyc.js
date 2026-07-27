@@ -70,6 +70,10 @@ $(document).ready(function () {
         const start = (currentPage - 1) * PER_PAGE;
         const page  = filtered.slice(start, start + PER_PAGE);
 
+        const session    = FinOpsStorage.getSession();
+        const userRole   = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
+        const canVerify  = (userRole === 'Admin' || userRole === 'Branch Officer');
+
         const rows = page.map(row => {
             const { customerId, cust, docs } = row;
             const initials = (cust.name || 'UN').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
@@ -92,8 +96,15 @@ $(document).ready(function () {
 
         
             const pendingDoc  = allDocs.find(d => d.status === 'Pending');
-            const viewDocId   = allDocs[0] ? allDocs[0].id : '';
             const actionDocId = pendingDoc ? pendingDoc.id : (allDocs[0] ? allDocs[0].id : '');
+
+            let actionBtns = `<button class="btn btn-outline-secondary btn-view" data-cust="${customerId}" title="View All Docs"><i class="fa-solid fa-eye"></i></button>`;
+            
+            if (canVerify) {
+                actionBtns += `
+                    <button class="btn btn-outline-success btn-verify" data-id="${actionDocId}" ${!pendingDoc ? 'disabled' : ''} title="Verify Pending Doc"><i class="fa-solid fa-check"></i></button>
+                    <button class="btn btn-outline-danger btn-reject" data-id="${actionDocId}" ${!pendingDoc ? 'disabled' : ''} title="Reject Pending Doc"><i class="fa-solid fa-xmark"></i></button>`;
+            }
 
             return `<tr>
                 <td class="ps-3">
@@ -113,20 +124,7 @@ $(document).ready(function () {
                 <td class="text-center">${statusBadge(overallStatus)}</td>
                 <td class="text-end pe-3">
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-secondary btn-view"
-                                data-cust="${customerId}" title="View All Docs">
-                            <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button class="btn btn-outline-success btn-verify"
-                                data-id="${actionDocId}"
-                                ${!pendingDoc ? 'disabled' : ''} title="Verify Pending Doc">
-                            <i class="fa-solid fa-check"></i>
-                        </button>
-                        <button class="btn btn-outline-danger btn-reject"
-                                data-id="${actionDocId}"
-                                ${!pendingDoc ? 'disabled' : ''} title="Reject Pending Doc">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                        ${actionBtns}
                     </div>
                 </td>
             </tr>`;

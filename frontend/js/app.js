@@ -25,6 +25,9 @@ $(document).ready(function () {
             $('#userEmailDisplay').text(session.email);
             const initials = session.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
             $('#userInitials').text(initials);
+            if (window.FinOpsUtils) {
+                $('#userRoleBadgeDisplay').html(window.FinOpsUtils.roleBadge(session.role));
+            }
         }
         updateNotifications();
     }

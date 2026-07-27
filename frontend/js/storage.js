@@ -14,12 +14,38 @@ const FinOpsStorage = {
     },
  
     init() {
-        if (!localStorage.getItem(this.KEYS.USERS)) {
-            localStorage.setItem(this.KEYS.USERS, JSON.stringify([
-                { id: 'USR-001', email: 'admin@finops.com',      password: 'admin123',   name: 'Ayush Sharma',    role: 'Admin',       department: 'Management',     lastLogin: '2026-07-12' },
-                { id: 'USR-002', email: 'clerk@finops.com',      password: 'clerk123',   name: 'Rahul Verma',     role: 'Clerk',       department: 'Operations',     lastLogin: '2026-07-11' },
-                { id: 'USR-003', email: 'manager@finops.com',    password: 'manager123', name: 'Priya Mehta',     role: 'Manager',     department: 'Credit',         lastLogin: '2026-07-10' }
-            ]));
+        const defaultUsers = [
+            { id: 'USR-001', email: 'admin@finops.com',      password: 'admin123',   name: 'Ayush Sharma',    role: 'Admin',                department: 'System Management', lastLogin: '2026-07-24' },
+            { id: 'USR-002', email: 'bmanager@finops.com',   password: 'manager123', name: 'Priya Mehta',     role: 'Branch Manager',       department: 'Branch Leadership', lastLogin: '2026-07-24' },
+            { id: 'USR-003', email: 'bofficer@finops.com',   password: 'officer123', name: 'Rahul Verma',     role: 'Branch Officer',       department: 'KYC & Credit Audit',lastLogin: '2026-07-24' },
+            { id: 'USR-004', email: 'rmanager@finops.com',   password: 'rm123',      name: 'Vikram Sharma',   role: 'Relationship Manager', department: 'Client Services',  lastLogin: '2026-07-24' },
+            { id: 'USR-005', email: 'customer@finops.com',   password: 'cust123',    name: 'Arjun Kapoor',    role: 'Customer',             department: 'Retail Banking',   lastLogin: '2026-07-24' }
+        ];
+
+        let storedUsers = [];
+        try {
+            storedUsers = JSON.parse(localStorage.getItem(this.KEYS.USERS)) || [];
+        } catch (e) {
+            storedUsers = [];
+        }
+
+        let updated = false;
+        defaultUsers.forEach(du => {
+            const idx = storedUsers.findIndex(u => u.email && u.email.toLowerCase() === du.email.toLowerCase());
+            if (idx === -1) {
+                storedUsers.push(du);
+                updated = true;
+            } else {
+                if (storedUsers[idx].role !== du.role || storedUsers[idx].password !== du.password) {
+                    storedUsers[idx].role = du.role;
+                    storedUsers[idx].password = du.password;
+                    updated = true;
+                }
+            }
+        });
+
+        if (updated || !localStorage.getItem(this.KEYS.USERS)) {
+            localStorage.setItem(this.KEYS.USERS, JSON.stringify(storedUsers));
         }
 
         if (!localStorage.getItem(this.KEYS.SETTINGS)) {
@@ -88,8 +114,11 @@ const FinOpsStorage = {
 
      
     login(email, password) {
-        const users = JSON.parse(localStorage.getItem(this.KEYS.USERS)) || [];
-        const user  = users.find(u => u.email === email && u.password === password);
+        this.init(); // Guarantee storage is synced with all demo accounts
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const cleanPass  = (password || '').trim();
+        const users      = JSON.parse(localStorage.getItem(this.KEYS.USERS)) || [];
+        const user       = users.find(u => u.email && u.email.toLowerCase() === cleanEmail && u.password === cleanPass);
         if (user) {
             const session = { id: user.id, email: user.email, name: user.name, role: user.role, department: user.department, loginTime: new Date().toISOString() };
             sessionStorage.setItem(this.KEYS.SESSION, JSON.stringify(session));
