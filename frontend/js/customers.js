@@ -35,9 +35,23 @@ $(document).ready(function () {
                 'No customers match your filters.</td></tr>'
             );
         } else {
+            const session  = FinOpsStorage.getSession();
+            const userRole = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
+            const canDelete = (userRole === 'Admin');
+            const canEdit = (userRole === 'Admin' || userRole === 'Relationship Manager');
+
             $('#custTableBody').html(data.map(c => {
                 const initials    = getInitials(c.name);
                 const statusBadge = c.status === 'Active' ? 'text-bg-success' : 'text-bg-danger';
+
+                let actionBtns = `<button class="btn btn-outline-secondary btn-view" data-id="${c.id}" title="View Details"><i class="fa-solid fa-eye"></i></button>`;
+                if (canEdit) {
+                    actionBtns += `<button class="btn btn-outline-primary btn-edit" data-id="${c.id}" title="Edit Info"><i class="fa-solid fa-pen"></i></button>`;
+                }
+                if (canDelete) {
+                    actionBtns += `<button class="btn btn-outline-danger btn-del" data-id="${c.id}" title="Delete Record"><i class="fa-solid fa-trash"></i></button>`;
+                }
+
                 return `
                 <tr>
                     <td class="ps-3 small fw-semibold text-secondary">${c.id}</td>
@@ -59,9 +73,7 @@ $(document).ready(function () {
                     <td class="small text-secondary">${FinOpsUtils.formatDate(c.joinedDate)}</td>
                     <td class="text-end pe-3">
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-secondary btn-view" data-id="${c.id}" title="View"><i class="fa-solid fa-eye"></i></button>
-                            <button class="btn btn-outline-primary btn-edit" data-id="${c.id}" title="Edit"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn btn-outline-danger btn-del" data-id="${c.id}" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                            ${actionBtns}
                         </div>
                     </td>
                 </tr>`;

@@ -109,24 +109,82 @@ const FinOpsUtils = {
         return map[type] || 'fa-bell text-secondary';
     },
 
+    // ─── Role Permissions Matrix ──────────────────
+    ROLE_PERMISSIONS: {
+        'Admin': {
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports', 'settings'],
+            label: 'System Admin',
+            badgeClass: 'text-bg-danger'
+        },
+        'Branch Manager': {
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports'],
+            label: 'Branch Manager',
+            badgeClass: 'text-bg-primary'
+        },
+        'Branch Officer': {
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports'],
+            label: 'Branch Officer',
+            badgeClass: 'text-bg-info'
+        },
+        'Relationship Manager': {
+            pages: ['dashboard', 'customers', 'loans', 'kyc'],
+            label: 'Relationship Manager',
+            badgeClass: 'text-bg-warning'
+        },
+        'Customer': {
+            pages: ['dashboard', 'customers', 'loans', 'kyc'],
+            label: 'Customer',
+            badgeClass: 'text-bg-success'
+        }
+    },
+
+    getNormalizedRole(rawRole) {
+        if (!rawRole) return 'Customer';
+        if (rawRole === 'Clerk') return 'Branch Officer';
+        if (rawRole === 'Manager') return 'Branch Manager';
+        return rawRole;
+    },
+
+    roleBadge(role) {
+        const norm = this.getNormalizedRole(role);
+        const perm = this.ROLE_PERMISSIONS[norm] || { label: norm, badgeClass: 'text-bg-secondary' };
+        return `<span class="badge ${perm.badgeClass}">${perm.label}</span>`;
+    },
+
+    canAccess(role, pageKey) {
+        const norm = this.getNormalizedRole(role);
+        const perm = this.ROLE_PERMISSIONS[norm];
+        if (!perm) return false;
+        return perm.pages.includes(pageKey);
+    },
+
     // ─── Sidebar & Topbar (Bootstrap-native) ───────
     renderShell(activePage) {
         const session  = window.FinOpsStorage ? window.FinOpsStorage.getSession()  : null;
         const settings = window.FinOpsStorage ? window.FinOpsStorage.getSettings() : {};
         const theme    = settings.theme || 'dark';
-        const unread   = window.FinOpsStorage ? window.FinOpsStorage.getUnreadCount() : 0;
+        const userRole = session ? this.getNormalizedRole(session.role) : 'Customer';
+
+        // Page level access check
+        if (activePage && !this.canAccess(userRole, activePage)) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
 
         // Apply Bootstrap theme via data-bs-theme on <html>
         $('html').attr('data-bs-theme', theme);
 
-        const navItems = [
+        const allNavItems = [
             { key: 'dashboard', icon: 'fa-gauge-high',         label: 'Dashboard',         href: 'dashboard.html' },
             { key: 'customers', icon: 'fa-users',               label: 'Customers',         href: 'customers.html' },
             { key: 'loans',     icon: 'fa-hand-holding-dollar', label: 'Loan Applications', href: 'loans.html'     },
             { key: 'kyc',       icon: 'fa-folder-open',         label: 'KYC Documents',     href: 'kyc.html'       },
-            { key: 'reports',   icon: 'fa-chart-bar',           label: 'Reports',           href: 'reports.html'   },
-            { key: 'settings',  icon: 'fa-sliders',             label: 'Settings',          href: 'settings.html'  }
+            { key: 'reports',   icon: 'fa-chart-bar',           label: 'Reports Center',    href: 'reports.html'   },
+            { key: 'settings',  icon: 'fa-sliders',             label: 'Settings Center',   href: 'settings.html'  }
         ];
+
+        // Filter navigation items by role
+        const navItems = allNavItems.filter(item => this.canAccess(userRole, item.key));
 
         const navHtml = navItems.map(n => `
             <li class="nav-item">
