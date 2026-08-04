@@ -124,7 +124,24 @@ $(document).ready(function () {
                 <td class="text-center">${statusBadge(overallStatus)}</td>
                 <td class="text-end pe-3">
                     <div class="btn-group btn-group-sm">
+<<<<<<< HEAD
                         ${actionBtns}
+=======
+                        <button class="btn btn-outline-secondary btn-view"
+                                data-cust="${customerId}" title="View All Docs">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-success btn-verify"
+                                data-id="${actionDocId}"
+                                ${!pendingDoc ? 'disabled' : ''} title="Verify Pending Doc">
+                            <i class="fa-solid fa-check"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-reject"
+                                data-id="${actionDocId}"
+                                ${!pendingDoc ? 'disabled' : ''} title="Reject Pending Doc">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+>>>>>>> 5cbf3af38bffee6b339985b14e9ee5df9d48012b
                     </div>
                 </td>
             </tr>`;
