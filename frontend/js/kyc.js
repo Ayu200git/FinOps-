@@ -70,6 +70,7 @@ $(document).ready(function () {
         const start = (currentPage - 1) * PER_PAGE;
         const page  = filtered.slice(start, start + PER_PAGE);
 
+<<<<<<< HEAD
         const session    = FinOpsStorage.getSession();
         const userRole   = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
         const canVerify  = (userRole === 'Admin' || userRole === 'Branch Officer');
@@ -106,6 +107,33 @@ $(document).ready(function () {
                     <button class="btn btn-outline-danger btn-reject" data-id="${actionDocId}" ${!pendingDoc ? 'disabled' : ''} title="Reject Pending Doc"><i class="fa-solid fa-xmark"></i></button>`;
             }
 
+=======
+        const rows = page.map(row => {
+            const { customerId, cust, docs } = row;
+            const initials = (cust.name || 'UN').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+
+             
+            const allDocs    = Object.values(docs);
+            let overallStatus = 'Pending';
+            if (allDocs.length && allDocs.every(d => d.status === 'Verified')) overallStatus = 'Verified';
+            else if (allDocs.some(d => d.status === 'Rejected'))               overallStatus = 'Rejected';
+
+            const avatarColor = { Verified: 'success', Pending: 'warning', Rejected: 'danger' }[overallStatus] || 'secondary';
+ 
+            const colBadges = DOC_TYPES.map(type => {
+                const doc = docs[type];
+                if (!doc)                         return `<td class="text-center"><span class="badge text-bg-secondary">— Missing</span></td>`;
+                if (doc.status === 'Verified')    return `<td class="text-center"><span class="badge text-bg-success">✔ Verified</span></td>`;
+                if (doc.status === 'Rejected')    return `<td class="text-center"><span class="badge text-bg-danger">✘ Rejected</span></td>`;
+                return `<td class="text-center"><span class="badge text-bg-warning">⏳ Pending</span></td>`;
+            }).join('');
+
+        
+            const pendingDoc  = allDocs.find(d => d.status === 'Pending');
+            const viewDocId   = allDocs[0] ? allDocs[0].id : '';
+            const actionDocId = pendingDoc ? pendingDoc.id : (allDocs[0] ? allDocs[0].id : '');
+
+>>>>>>> 91a6ff5b2d5f31c7a9797f4872457ce9ec6b6c47
             return `<tr>
                 <td class="ps-3">
                     <span class="fw-semibold small text-primary">${customerId}</span>
@@ -125,8 +153,11 @@ $(document).ready(function () {
                 <td class="text-end pe-3">
                     <div class="btn-group btn-group-sm">
 <<<<<<< HEAD
+<<<<<<< HEAD
                         ${actionBtns}
 =======
+=======
+>>>>>>> 91a6ff5b2d5f31c7a9797f4872457ce9ec6b6c47
                         <button class="btn btn-outline-secondary btn-view"
                                 data-cust="${customerId}" title="View All Docs">
                             <i class="fa-solid fa-eye"></i>
@@ -141,7 +172,10 @@ $(document).ready(function () {
                                 ${!pendingDoc ? 'disabled' : ''} title="Reject Pending Doc">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
+<<<<<<< HEAD
 >>>>>>> 5cbf3af38bffee6b339985b14e9ee5df9d48012b
+=======
+>>>>>>> 91a6ff5b2d5f31c7a9797f4872457ce9ec6b6c47
                     </div>
                 </td>
             </tr>`;
