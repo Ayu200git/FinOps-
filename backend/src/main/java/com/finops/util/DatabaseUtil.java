@@ -78,10 +78,20 @@ public class DatabaseUtil {
                         "city VARCHAR(100), " +
                         "status VARCHAR(20)" +
                         ")");
+                stmt.execute("CREATE TABLE IF NOT EXISTS loan (" +
+                        "loan_id SERIAL PRIMARY KEY, " +
+                        "customer_id INTEGER NOT NULL REFERENCES customer(customer_id), " +
+                        "loan_type VARCHAR(100) NOT NULL, " +
+                        "amount DOUBLE PRECISION NOT NULL, " +
+                        "interest_rate DOUBLE PRECISION NOT NULL, " +
+                        "tenure_months INTEGER NOT NULL, " +
+                        "status VARCHAR(20) NOT NULL, " +
+                        "applied_date DATE NOT NULL" +
+                        ")");
                 initialized = true;
-                System.out.println("[DatabaseUtil] Database customer table initialized/verified.");
+                System.out.println("[DatabaseUtil] Database customer and loan tables initialized/verified.");
             } catch (SQLException e) {
-                System.err.println("[DatabaseUtil] Failed to initialize customer table:");
+                System.err.println("[DatabaseUtil] Failed to initialize database tables:");
                 e.printStackTrace();
             }
         }
