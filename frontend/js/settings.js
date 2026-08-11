@@ -9,7 +9,7 @@ $(document).ready(function () {
     let lastSaved    = 'Never';      
 
     /*
-       CONFIG (Nested Corporate Architecture)
+       CONFIG  
     */
     const DEFAULT_CONFIG = {
         general: {

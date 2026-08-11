@@ -13,10 +13,10 @@ import java.util.List;
 public class KycDAOimp implements KycDAO {
 
     @Override
-    public boolean addKyc(KYC kyc) {
+    public boolean addKyc(Kyc kyc) {
         String sql = "INSERT INTO kyc (customer_id, document_type, document_number, document_image_path, document_status, submission_date, approval_date, rejection_date, rejection_reason, remarks, pan_no, created_by, created_date, aadhaar_no, verified_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try(con.getConnection();
-            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = DatabaseUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setInt(1, kyc.getCustomerId());
             ps.setString(2, kyc.getDocumentType());
@@ -46,7 +46,7 @@ public class KycDAOimp implements KycDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    
+        return false;
     }
 
     @Override
@@ -87,9 +87,9 @@ public class KycDAOimp implements KycDAO {
 
     @Override
     public void updateKyc(Kyc kyc) {
-        string sql = "UPDATE kyc SET customer_id = ?, document_type = ?, document_number = ?, document_image_path = ?, document_status = ?, submission_date = ?, approval_date = ?, rejection_date = ?, rejection_reason = ?, remarks = ?, pan_no = ?, created_by = ?, created_date = ?, aadhaar_no = ?, verified_by = ? WHERE kyc_id = ?";
+        String sql = "UPDATE kyc SET customer_id = ?, document_type = ?, document_number = ?, document_image_path = ?, document_status = ?, submission_date = ?, approval_date = ?, rejection_date = ?, rejection_reason = ?, remarks = ?, pan_no = ?, created_by = ?, created_date = ?, aadhaar_no = ?, verified_by = ? WHERE kyc_id = ?";
         try (Connection con = DatabaseUtil.getConnection();
-         preparedStatement ps = con.prepareStatement(sql)) {
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, kyc.getCustomerId());
             ps.setString(2, kyc.getDocumentType());
@@ -115,6 +115,34 @@ public class KycDAOimp implements KycDAO {
     }
 
     @Override
+    public boolean verifyKyc(int customerId) {
+        String sql = "UPDATE kyc SET document_status = 'Verified', approval_date = CURRENT_DATE WHERE customer_id = ?";
+        try (Connection con = DatabaseUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, customerId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rejectKyc(int customerId) {
+        String sql = "UPDATE kyc SET document_status = 'Rejected', rejection_date = CURRENT_DATE WHERE customer_id = ?";
+        try (Connection con = DatabaseUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, customerId);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public void deleteKyc(int id) {
         String sql = "DELETE FROM kyc WHERE kyc_id = ?";
         try (Connection con = DatabaseUtil.getConnection();
@@ -127,56 +155,48 @@ public class KycDAOimp implements KycDAO {
         }
     }
 
-@Override
-public void verifyKyc(int customerId) {
-    String sql = "UPDATE kyc SET document_status = 'Verified', approval_date = CURRENT_DATE WHERE customer_id = ?";
-    try (Connection con = DatabaseUtil.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
+    @Override
+    public boolean getKycByCustomer(int customerId) {
+        String sql = "SELECT 1 FROM kyc WHERE customer_id = ?";
+        try (Connection con = DatabaseUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-        ps.setInt(1, customerId);
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-@Override
-public void rejectKyc(int customerId) {
-    String sql = "UPDATE kyc SET document_status = 'Rejected', rejection_date = CURRENT_DATE WHERE customer_id = ?";
-    try (Connection con = DatabaseUtil.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setInt(1, customerId);
-        ps.executeUpdate();
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-
-@Override
- public boolean getKycByCustomer(int customerId) {
-    String sql = "SELECT * FROM kyc WHERE customer_id = ?";
-    try (Connection con = DatabaseUtil.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-
-        ps.setInt(1, customerId);
-        try (ResultSet rs = ps.executeQuery()) {
-            return rs.next();  
+            ps.setInt(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-    return false;  
+
+    private Kyc mapRowToKyc(ResultSet rs) throws SQLException {
+        Kyc kyc = new Kyc();
+        kyc.setKycId(rs.getInt("kyc_id"));
+        kyc.setCustomerId(rs.getInt("customer_id"));
+        kyc.setDocumentType(rs.getString("document_type"));
+        kyc.setDocumentNumber(rs.getString("document_number"));
+        kyc.setDocumentImagePath(rs.getString("document_image_path"));
+        kyc.setDocumentStatus(rs.getString("document_status"));
+        if (rs.getDate("submission_date") != null) {
+            kyc.setSubmissionDate(rs.getDate("submission_date").toLocalDate());
+        }
+        if (rs.getDate("approval_date") != null) {
+            kyc.setApprovalDate(rs.getDate("approval_date").toLocalDate());
+        }
+        if (rs.getDate("rejection_date") != null) {
+            kyc.setRejectionDate(rs.getDate("rejection_date").toLocalDate());
+        }
+        kyc.setRejectionReason(rs.getString("rejection_reason"));
+        kyc.setRemarks(rs.getString("remarks"));
+        kyc.setPanNo(rs.getString("pan_no"));
+        kyc.setCreatedBy(rs.getString("created_by"));
+        if (rs.getDate("created_date") != null) {
+            kyc.setCreatedDate(rs.getDate("created_date").toLocalDate());
+        }
+        kyc.setAadhaarNo(rs.getString("aadhaar_no"));
+        kyc.setVerifiedBy(rs.getString("verified_by"));
+        return kyc;
+    }
 }
-
- 
- 
-     String sql = "DELETE FROM kyc WHERE kyc_id = ?";
-     try (Connection con = DatabaseUtil.getConnection();
-          PreparedStatement ps = con.prepareStatement(sql)) {
-
-         ps.setInt(1, id);
-         ps.executeUpdate();
-     } catch (SQLException e) {
-         e.printStackTrace();
-     }

@@ -9,7 +9,7 @@ $(document).ready(function () {
     let currentPage = 1;
     const PER_PAGE  = 5;    
 
-    /* ════════════════ STATUS BADGE   ════════════════ */
+    /*   STATUS BADGE    */
     function loanBadge(status) {
         const map = {
             Pending: 'warning', 'Under Review': 'primary', Approved: 'success',
@@ -18,7 +18,7 @@ $(document).ready(function () {
         return `<span class="badge text-bg-${map[status] || 'secondary'}">${status}</span>`;
     }
 
-    /* ════════════════ LIVE EMI CALCULATOR ════════════════ */
+    /*  LIVE EMI CALCULATOR  */
     function recalc() {
         const amt  = parseFloat($('#lAmount').val()) || 0;
         const rate = parseFloat($('#lRate').val())   || 0;
@@ -36,7 +36,7 @@ $(document).ready(function () {
     }
     $('#lAmount, #lRate, #lDuration').on('input change', recalc);
 
-    /* ════════════════ DYNAMIC FORM (show fields by loan type) ════════════════ */
+    
     function updateTypeFields() {
         const type = $('#lType').val();
         $('.type-fields').addClass('d-none');
@@ -56,8 +56,7 @@ $(document).ready(function () {
             default:          return {};
         }
     }
-
-    // Pretty labels for showing details in the offcanvas
+ 
     const detailLabels = {
         employer: 'Employer', propertyValue: 'Property Value', downPayment: 'Down Payment',
         propertyAddress: 'Property Address', carModel: 'Car Model', onRoadPrice: 'On-road Price',
@@ -66,7 +65,7 @@ $(document).ready(function () {
         goldWeight: 'Gold Weight (g)', purity: 'Purity', item: 'Item'
     };
 
-    /* ════════════════ CUSTOMER DROPDOWN + AUTO-FILL ════════════════ */
+    /*  CUSTOMER DROPDOWN */
     function loadCustomerDropdown() {
         const custs = FinOpsStorage.getCustomers().filter(c => c.status === 'Active');
         if (!custs.length) {
@@ -88,7 +87,7 @@ $(document).ready(function () {
         $(this).removeClass('is-invalid');
     });
 
-    /* ════════════════ RENDER TABLE ════════════════ */
+    
     function render() {
         const q      = $('#loanSearch').val().toLowerCase().trim();
         const status = $('#loanStatusFilter').val();
@@ -156,13 +155,13 @@ $(document).ready(function () {
         });
     }
 
-    /* ════════════════ SEARCH + FILTERS ════════════════ */
+  
     $('#loanSearch, #loanStatusFilter, #loanTypeFilter').on('input change', function () {
         currentPage = 1;
         render();
     });
 
-    /* ════════════════ NEW APPLICATION (open modal) ════════════════ */
+   
     $('#btnNewLoan').on('click', function () {
         loadCustomerDropdown();
         $('#loanForm')[0].reset();
@@ -173,8 +172,7 @@ $(document).ready(function () {
         recalc();
         loanModal.show();
     });
-
-    /* ════════════════ SAVE (submit → localStorage → refresh) ════════════════ */
+ 
     $('#loanForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -250,8 +248,7 @@ $(document).ready(function () {
             FinOpsUtils.showAlert(res.message, 'error');
         }
     });
-
-    /* ════════════════ VIEW DETAIL (offcanvas) ════════════════ */
+ 
     $(document).on('click', '.btn-view', function () {
         const l = FinOpsStorage.getLoan($(this).data('id'));
         if (!l) return;
@@ -259,8 +256,7 @@ $(document).ready(function () {
         const pct     = l.durationMonths ? Math.round(l.paymentsMade / l.durationMonths * 100) : 0;
         const showBar = l.status === 'Approved' || l.status === 'Paid';
         const totalPayable = l.monthlyInstallment * l.durationMonths;
-
-        // Dynamic type-specific rows
+ 
         let detailsRows = '';
         if (l.details && Object.keys(l.details).length) {
             detailsRows = Object.entries(l.details)

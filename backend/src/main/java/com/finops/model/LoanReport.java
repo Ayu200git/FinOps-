@@ -2,7 +2,7 @@ package com.finops.model;
 
 import java.time.LocalDate;
 
- 
+public class LoanReport {
 
     private String customerName;
 
@@ -26,7 +26,10 @@ import java.time.LocalDate;
 
         this.appliedDate = appliedDate;
 
+    
+    
     }
+}
 
  
     

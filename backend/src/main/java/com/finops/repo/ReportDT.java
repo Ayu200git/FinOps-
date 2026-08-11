@@ -1,4 +1,6 @@
 package com.finops.repo;
 
-public class ReportDTOimp1 {
+public class ReportDT {
+}
+
  
