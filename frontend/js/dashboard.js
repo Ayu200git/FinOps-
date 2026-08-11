@@ -18,6 +18,12 @@ $(document).ready(function () {
     }
 
     function load() {
+        const session   = FinOpsStorage.getSession();
+        const role      = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
+
+        // Render Role-Tailored Welcome Banner
+        renderRoleBanner(session, role);
+
         const loans     = FinOpsStorage.getLoans();
         const customers = FinOpsStorage.getCustomers();
 
@@ -41,6 +47,49 @@ $(document).ready(function () {
 
         renderCharts(loans);
         renderActivityLog();
+    }
+
+    function renderRoleBanner(session, role) {
+        const name = session ? session.name : 'User';
+        const badge = FinOpsUtils.roleBadge(role);
+        $('#roleHeaderBadge').html(badge);
+
+        if (role === 'Admin') {
+            $('#roleWelcomeTitle').text(`Welcome, ${name}`);
+            $('#roleWelcomeSubtitle').text('System Overview: Administrative control across all branches, users, and audit configurations.');
+            $('#roleQuickActions').html(`
+                <a href="settings.html" class="btn btn-light btn-sm fw-semibold"><i class="fa-solid fa-sliders me-1"></i> System Settings</a>
+                <a href="reports.html" class="btn btn-outline-light btn-sm fw-semibold"><i class="fa-solid fa-chart-bar me-1"></i> All Reports</a>
+            `);
+        } else if (role === 'Branch Manager') {
+            $('#roleWelcomeTitle').text(`Welcome, ${name}`);
+            $('#roleWelcomeSubtitle').text('Branch Decision Desk: Review recommended applications, make final credit decisions, and monitor recovery.');
+            $('#roleQuickActions').html(`
+                <a href="loans.html" class="btn btn-light btn-sm fw-semibold"><i class="fa-solid fa-check-double me-1"></i> Pending Approvals</a>
+                <a href="reports.html" class="btn btn-outline-light btn-sm fw-semibold"><i class="fa-solid fa-chart-line me-1"></i> Branch Reports</a>
+            `);
+        } else if (role === 'Branch Officer') {
+            $('#roleWelcomeTitle').text(`Welcome, ${name}`);
+            $('#roleWelcomeSubtitle').text('Verification & Credit Desk: Verify customer KYC papers and calculate loan recommendations.');
+            $('#roleQuickActions').html(`
+                <a href="kyc.html" class="btn btn-light btn-sm fw-semibold"><i class="fa-solid fa-passport me-1"></i> Verify KYC</a>
+                <a href="loans.html" class="btn btn-outline-light btn-sm fw-semibold"><i class="fa-solid fa-calculator me-1"></i> Loan Review</a>
+            `);
+        } else if (role === 'Relationship Manager') {
+            $('#roleWelcomeTitle').text(`Welcome, ${name}`);
+            $('#roleWelcomeSubtitle').text('Client Relationship Desk: Manage customer accounts, assist walk-ins, and initiate loan requests.');
+            $('#roleQuickActions').html(`
+                <a href="customers.html" class="btn btn-light btn-sm fw-semibold"><i class="fa-solid fa-user-plus me-1"></i> Add Customer</a>
+                <a href="loans.html" class="btn btn-outline-light btn-sm fw-semibold"><i class="fa-solid fa-hand-holding-dollar me-1"></i> Apply Loan</a>
+            `);
+        } else {
+            $('#roleWelcomeTitle').text(`Welcome, ${name}`);
+            $('#roleWelcomeSubtitle').text('My Financial Dashboard: View your active loans, track EMI schedules, and manage KYC documents.');
+            $('#roleQuickActions').html(`
+                <a href="loans.html" class="btn btn-light btn-sm fw-semibold"><i class="fa-solid fa-paper-plane me-1"></i> Apply for Loan</a>
+                <a href="kyc.html" class="btn btn-outline-light btn-sm fw-semibold"><i class="fa-solid fa-upload me-1"></i> Upload KYC</a>
+            `);
+        }
     }
 
     function renderCharts(loans) {
