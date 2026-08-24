@@ -8,6 +8,14 @@ import com.finops.servlet.LoginServlet;
 import com.finops.servlet.LogoutServlet;
 import java.util.List;
 import java.io.File;
+import com.finops.filter.AuthenticationFilter;
+import com.finops.filter.AuthorizationFilter;
+import com.finops.servlet.KycServlet;
+
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
+
+import jakarta.servlet.DispatcherType;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
@@ -115,6 +123,7 @@ public class Main {
         tomcat.setBaseDir(new File(".").getAbsolutePath());
 
         Context ctx = tomcat.addContext("", new File(".").getAbsolutePath());
+        ctx.setParentClassLoader(Main.class.getClassLoader());
  
         Tomcat.addServlet(ctx, "static", new com.finops.servlet.StaticFileServlet(frontendDir));
         ctx.addServletMappingDecoded("/*", "static");
@@ -127,6 +136,41 @@ public class Main {
  
         Tomcat.addServlet(ctx, "logoutServlet", new LogoutServlet());
         ctx.addServletMappingDecoded("/api/logout", "logoutServlet");
+
+        Tomcat.addServlet(
+        ctx,
+        "kycServlet",
+        new KycServlet()
+);
+
+ctx.addServletMappingDecoded(
+        "/api/kyc/upload",
+        "kycServlet"
+);
+
+        FilterDef authFilter = new FilterDef();
+
+authFilter.setFilterName("AuthenticationFilter");
+authFilter.setFilterClass(
+        AuthenticationFilter.class.getName()
+);
+
+ctx.addFilterDef(authFilter);
+
+
+FilterMap authMapping = new FilterMap();
+
+authMapping.setFilterName("AuthenticationFilter");
+
+authMapping.addURLPattern(
+        "/api/customers/*"
+);
+
+authMapping.setDispatcher(
+        DispatcherType.REQUEST.name()
+);
+
+ctx.addFilterMap(authMapping);
 
         tomcat.start();
         System.out.println("Server started at http://localhost:" + port);
