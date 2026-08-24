@@ -15,6 +15,12 @@ public class DatabaseUtil {
     private static boolean initialized = false;
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("PostgreSQL JDBC driver is not available", e);
+        }
+
         String url = RAW_URL;
         String user = USER;
         String password = PASSWORD;

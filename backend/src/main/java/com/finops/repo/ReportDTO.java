@@ -1,18 +1,19 @@
 package com.finops.repo;
 
+import com.finops.model.LoanReport;
 import java.util.List;
 
 public class ReportDTO {
     public interface ReportDAO {
 
-    List<LoanReport> getLoanReport();
+        List<LoanReport> getLoanReport();
 
-    List<LoanReport> getPendingLoanReport();
+        List<LoanReport> getPendingLoanReport();
 
-    List<LoanReport> getApprovedLoanReport();
+        List<LoanReport> getApprovedLoanReport();
 
-    List<LoanReport> searchLoanReport(String keyword);
-    
+        List<LoanReport> searchLoanReport(String keyword);
 
-}
+    }
+
 }
