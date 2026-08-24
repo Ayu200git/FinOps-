@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import com.finops.util.EnvLoader;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -19,7 +20,12 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
         resp.setContentType("application/json;charset=UTF-8");
 
-        boolean authenticated = "admin".equals(username) && "password".equals(password);
+        String configuredUsername = EnvLoader.get("FINOPS_ADMIN_USERNAME", "");
+        String configuredPassword = EnvLoader.get("FINOPS_ADMIN_PASSWORD", "");
+        boolean authenticated = !configuredUsername.isEmpty()
+            && !configuredPassword.isEmpty()
+            && configuredUsername.equals(username)
+            && configuredPassword.equals(password);
         if (!authenticated) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("{\"error\": \"Invalid username or password\"}");
