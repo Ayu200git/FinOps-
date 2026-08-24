@@ -19,18 +19,18 @@ public class StaticFileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // compute path relative to context: use request URI minus context path
+        // compute path relative to context 
         String uri = req.getRequestURI();
         String context = req.getContextPath();
         if (context != null && !context.isEmpty() && uri.startsWith(context)) {
             uri = uri.substring(context.length());
         }
         if (uri == null || uri.equals("/") || uri.isEmpty()) uri = "/index.html";
-        // strip leading '/'
+         
         String rel = uri.startsWith("/") ? uri.substring(1) : uri;
         Path resolved = baseDir.resolve(rel).normalize();
         if (!resolved.startsWith(baseDir) || !Files.exists(resolved) || Files.isDirectory(resolved)) {
-            // fallback to index.html for SPA routes
+             
             Path index = baseDir.resolve("index.html").normalize();
             if (Files.exists(index)) {
                 resp.setContentType("text/html");
