@@ -171,7 +171,6 @@ public class KycDAOimp implements KycDAO {
         }
     }
 
-    @Override
     public boolean getKycByCustomer(int customerId) {
         String sql = "SELECT 1 FROM kyc WHERE customer_id = ?";
         try (Connection con = DatabaseUtil.getConnection();

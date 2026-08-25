@@ -133,6 +133,7 @@ public class Main {
 
         Tomcat.addServlet(ctx, "loginServlet", new LoginServlet());
         ctx.addServletMappingDecoded("/api/login", "loginServlet");
+        ctx.addServletMappingDecoded("/api/session", "loginServlet");
  
         Tomcat.addServlet(ctx, "logoutServlet", new LogoutServlet());
         ctx.addServletMappingDecoded("/api/logout", "logoutServlet");

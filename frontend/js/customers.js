@@ -1,4 +1,3 @@
- 
 $(document).ready(function () {
 
      
@@ -7,26 +6,119 @@ $(document).ready(function () {
     
     const custModal   = new bootstrap.Modal('#custModal');
     const detailPanel = new bootstrap.Offcanvas('#custDetailCanvas');
-
-    // ── Pagination  ──
+ 
     let currentPage = 1;
-    const PER_PAGE  = 4;    
+    const PER_PAGE  = 4;   
+    let renderTimer;
+    let isSaving = false;
 
-    /* ════════════════ RENDER TABLE ════════════════ */
-    function render() {
-        const q      = $('#custSearch').val().toLowerCase().trim();
-        const status = $('#custStatusFilter').val();
-        const kyc    = $('#custKycFilter').val();
+    async function readApiResponse(response, fallbackMessage) {
+        const contentType = response.headers.get('content-type') || '';
+        const data = contentType.includes('application/json')
+            ? await response.json()
+            : { error: await response.text() };
 
-        const list = FinOpsStorage.getCustomers().filter(c => {
-            const matchQ = !q || [c.id, c.name, c.email, c.phone, c.city]
-                .some(f => f && f.toLowerCase().includes(q));
-            return matchQ && (!status || c.status === status) && (!kyc || c.kycStatus === kyc);
+        if (!response.ok) {
+            if (response.status === 401) {
+                throw new Error('Your session has expired. Please sign in again.');
+            }
+            throw new Error(data.error || fallbackMessage);
+        }
+
+        return data;
+    }
+    
+    async function apiGetCustomers() {
+        const params = new URLSearchParams({
+            page: currentPage,
+            size: PER_PAGE,
+            search: $('#custSearch').val().trim(),
+            status: $('#custStatusFilter').val(),
+            kycStatus: $('#custKycFilter').val()
         });
+        const response = await fetch(`/api/customers?${params}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        return await readApiResponse(response, 'Unable to load customers.');
+    }
 
-        $('#custCount').text(list.length);
 
-        const { data, total } = FinOpsUtils.paginate(list, currentPage, PER_PAGE);
+    async function apiGetCustomer(id) {
+        const response = await fetch(`/api/customers/${encodeURIComponent(id)}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        });
+        return await readApiResponse(response, 'Unable to load customer.');
+    }
+
+
+    async function apiCreateCustomer(customer) {
+        const response = await fetch('/api/customers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(customer)
+        });
+        return await readApiResponse(response, 'Customer creation failed.');
+    }
+
+
+    async function apiUpdateCustomer(id, customer) {
+        const response = await fetch(`/api/customers/${encodeURIComponent(id)}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify(customer)
+        });
+        return await readApiResponse(response, 'Customer update failed.');
+    }
+
+
+    async function apiDeleteCustomer(id) {
+        const response = await fetch(`/api/customers/${encodeURIComponent(id)}`, {
+            method: 'DELETE',
+            credentials: 'same-origin'
+        });
+        return await readApiResponse(response, 'Customer deletion failed.');
+    }
+
+    function normalizeCustomer(customer) {
+        return {
+            ...customer,
+            id: customer.customerId,
+            name: customer.customerName,
+            phone: customer.mobile,
+            status: customer.status
+                ? customer.status[0] + customer.status.slice(1).toLowerCase()
+                : customer.status
+        };
+    }
+
+     
+    async function render() {
+        let customers;
+
+try {
+    customers = await apiGetCustomers();
+} catch (error) {
+    console.error(error);
+
+    FinOpsUtils.showAlert(
+        'Unable to load customers from server.',
+        'danger'
+    );
+
+    return;
+}
+
+        const result = customers.items ? customers : { items: customers, totalItems: customers.length, totalPages: 1 };
+        const list = result.items.map(normalizeCustomer);
+
+        $('#custCount').text(result.totalItems);
+
+        const data = list;
+        const total = result.totalPages;
 
         if (!data.length) {
             $('#custTableBody').html(
@@ -89,10 +181,11 @@ $(document).ready(function () {
      
     $('#custSearch, #custStatusFilter, #custKycFilter').on('input change', function () {
         currentPage = 1;
-        render();
+        clearTimeout(renderTimer);
+        renderTimer = setTimeout(render, 250);
     });
 
-    /* Add profile in new window modal*/
+     
     $('#btnNewCustomer').on('click', function () {
         resetForm();
         $('#editCustId').val('');
@@ -101,9 +194,15 @@ $(document).ready(function () {
     });
 
     /* ════════════════ EDIT  ════════════════ */
-    $(document).on('click', '.btn-edit', function () {
-        const c = FinOpsStorage.getCustomer($(this).data('id'));
-        if (!c) return;
+    $(document).on('click', '.btn-edit', async function () {
+        let c;
+        try {
+            c = await apiGetCustomer($(this).data('id'));
+        } catch (error) {
+            FinOpsUtils.showAlert(error.message, 'danger');
+            return;
+        }
+        c = normalizeCustomer(c);
 
         const openModal = () => {
             resetForm();
@@ -127,8 +226,9 @@ $(document).ready(function () {
     });
 
     /* ════════════════ SAVE  ════════════════ */
-    $('#custForm').on('submit', function (e) {
+    $('#custForm').on('submit', async function (e) {
         e.preventDefault();
+        if (isSaving) return;
 
         const name  = $('#fName').val().trim();
         const email = $('#fEmail').val().trim();
@@ -144,50 +244,72 @@ $(document).ready(function () {
         }
 
         const data = {
-            name, email, phone,
-            dob:         $('#fDob').val(),
-            city:        $('#fCity').val().trim(),
-            pincode:     $('#fPincode').val().trim(),
-            address:     $('#fAddress').val().trim(),
-            creditScore: parseInt($('#fCreditScore').val()) || 0,
-            balance:     parseFloat($('#fBalance').val())    || 0,
-            status:      $('#fStatus').val(),
-            kycStatus:   $('#fKycStatus').val()
+            customerName: name,
+            email,
+            mobile: phone,
+            city: $('#fCity').val().trim(),
+            status: $('#fStatus').val().toUpperCase(),
+            dob: $('#fDob').val() || null,
+            pincode: $('#fPincode').val().trim() || null,
+            creditScore: parseInt($('#fCreditScore').val(), 10) || null,
+            balance: parseFloat($('#fBalance').val()) || 0,
+            kycStatus: $('#fKycStatus').val(),
+            address: $('#fAddress').val().trim() || null
         };
 
         const id = $('#editCustId').val();
-        if (id) {
-            FinOpsStorage.updateCustomer(id, data);
-            FinOpsUtils.showAlert(`Customer ${id} updated.`, 'success');
-        } else {
-            const nc = FinOpsStorage.addCustomer(data);
-            FinOpsUtils.showAlert(`Customer ${nc.id} created.`, 'success');
+        isSaving = true;
+        const saveButton = $('#custForm button[type="submit"]');
+        saveButton.prop('disabled', true);
+        try {
+            if (id) {
+                await apiUpdateCustomer(id, data);
+                FinOpsUtils.showAlert(`Customer ${id} updated.`, 'success');
+            } else {
+                await apiCreateCustomer(data);
+                FinOpsUtils.showAlert('Customer created.', 'success');
+            }
+        } catch (error) {
+            FinOpsUtils.showAlert(error.message, 'danger');
+            isSaving = false;
+            saveButton.prop('disabled', false);
+            return;
         }
 
+        isSaving = false;
+        saveButton.prop('disabled', false);
         custModal.hide();
         render();
     });
 
     /* ════════════════ DELETE ════════════════ */
-    $(document).on('click', '.btn-del', function () {
+    $(document).on('click', '.btn-del', async function () {
         const id = $(this).data('id');
-        const c  = FinOpsStorage.getCustomer(id);
-        if (!c) return;
-        if (!confirm(`Delete ${c.name} (${c.id})?\nLinked loans and KYC records will also be removed.`)) return;
-        FinOpsStorage.deleteCustomer(id);
-        FinOpsUtils.showAlert(`Customer ${c.name} deleted.`, 'success');
+        const name = $(this).closest('tr').find('td:nth-child(2) .fw-semibold').text();
+        if (!id) return;
+        if (!confirm(`Delete ${name} (${id})?\nLinked loans and KYC records will also be removed.`)) return;
+        try {
+            await apiDeleteCustomer(id);
+            FinOpsUtils.showAlert(`Customer ${id} deleted.`, 'success');
+        } catch (error) {
+            FinOpsUtils.showAlert(error.message, 'danger');
+            return;
+        }
 
          
-        const remaining = FinOpsStorage.getCustomers().length;
-        const maxPage   = Math.max(1, Math.ceil(remaining / PER_PAGE));
-        if (currentPage > maxPage) currentPage = maxPage;
         render();
     });
 
     /* ════════════════ VIEW DETAIL ════════════════ */
-    $(document).on('click', '.btn-view', function () {
-        const c = FinOpsStorage.getCustomer($(this).data('id'));
-        if (!c) return;
+    $(document).on('click', '.btn-view', async function () {
+        let c;
+        try {
+            c = await apiGetCustomer($(this).data('id'));
+        } catch (error) {
+            FinOpsUtils.showAlert(error.message, 'danger');
+            return;
+        }
+        c = normalizeCustomer(c);
 
         const loans    = FinOpsStorage.getLoans().filter(l => l.customerId === c.id);
         const kycDocs  = FinOpsStorage.getKYCForCustomer(c.id);
@@ -262,7 +384,7 @@ $(document).ready(function () {
         detailPanel.show();
     });
 
-    /* ════════════════ HELPERS ════════════════ */
+    
     function getInitials(name) {
         return (name || '').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
     }

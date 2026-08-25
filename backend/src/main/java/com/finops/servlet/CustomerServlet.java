@@ -2,8 +2,11 @@ package com.finops.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finops.model.Customer;
-import com.finops.repo.CustomerDAO;
-import com.finops.repo.CustomerDAOImpl;
+// import com.finops.repo.CustomerDAO;
+// import com.finops.repo.CustomerDAOImpl;
+import com.finops.service.CustomerService;
+import com.finops.service.CustomerServiceImpl;
+import com.finops.service.CustomerServiceImpl.CustomerNotFoundException;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -13,11 +16,12 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+// import java.util.List;
+// import java.util.Map;
 
 public class CustomerServlet extends HttpServlet {
 
-    private final CustomerDAO dao = new CustomerDAOImpl();
+        private final CustomerService customerService = new CustomerServiceImpl();
     private final ObjectMapper mapper = new ObjectMapper();
 
     
@@ -65,13 +69,17 @@ public class CustomerServlet extends HttpServlet {
 
         if (path == null || path.equals("/")) {
 
-            List<Customer> customers =
-                    dao.getAllCustomers();
+            int page = parseQueryInt(req.getParameter("page"), 1);
+            int size = parseQueryInt(req.getParameter("size"), 25);
+            String search = req.getParameter("search");
+            String status = req.getParameter("status");
+            String kycStatus = req.getParameter("kycStatus");
+            Object customers = (req.getParameter("page") == null && req.getParameter("size") == null
+                    && search == null && status == null && kycStatus == null)
+                    ? customerService.getAllCustomers()
+                    : customerService.searchCustomers(page, size, search, status, kycStatus);
 
-            mapper.writeValue(
-                    resp.getWriter(),
-                    customers
-            );
+            mapper.writeValue(resp.getWriter(), customers);
 
             return;
         }
@@ -88,7 +96,7 @@ public class CustomerServlet extends HttpServlet {
                     Integer.parseInt(id);
 
             Customer customer =
-                    dao.getCustomerById(customerId);
+                    customerService.getCustomerById(customerId);
 
             if (customer == null) {
 
@@ -112,7 +120,10 @@ public class CustomerServlet extends HttpServlet {
                     customer
             );
 
-        } catch (NumberFormatException e) {
+                } catch (CustomerNotFoundException e) {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        mapper.writeValue(resp.getWriter(), Collections.singletonMap("error", "Customer not found"));
+                } catch (NumberFormatException e) {
 
             resp.setStatus(
                     HttpServletResponse.SC_BAD_REQUEST
@@ -183,25 +194,7 @@ public class CustomerServlet extends HttpServlet {
 
              
 
-            boolean created =
-                    dao.addCustomer(customer);
-
-            if (!created) {
-
-                resp.setStatus(
-                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR
-                );
-
-                mapper.writeValue(
-                        resp.getWriter(),
-                        Collections.singletonMap(
-                                "error",
-                                "Customer creation failed"
-                        )
-                );
-
-                return;
-            }
+            customerService.createCustomer(customer);
 
             
 
@@ -283,7 +276,7 @@ public class CustomerServlet extends HttpServlet {
                     );
  
             Customer existing =
-                    dao.getCustomerById(customerId);
+                    customerService.getCustomerById(customerId);
 
             if (existing == null) {
 
@@ -316,7 +309,7 @@ public class CustomerServlet extends HttpServlet {
           
             // Update
            
-            dao.updateCustomer(customer);
+            customerService.updateCustomer(customerId, customer);
 
             mapper.writeValue(
                     resp.getWriter(),
@@ -326,19 +319,12 @@ public class CustomerServlet extends HttpServlet {
                     )
             );
 
-        } catch (NumberFormatException e) {
-
-            resp.setStatus(
-                    HttpServletResponse.SC_BAD_REQUEST
-            );
-
-            mapper.writeValue(
-                    resp.getWriter(),
-                    Collections.singletonMap(
-                            "error",
-                            "Invalid customer ID"
-                    )
-            );
+                } catch (CustomerNotFoundException e) {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        mapper.writeValue(resp.getWriter(), Collections.singletonMap("error", "Customer not found"));
+                } catch (IllegalArgumentException e) {
+                        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        mapper.writeValue(resp.getWriter(), Collections.singletonMap("error", e.getMessage()));
         }
     }
 
@@ -423,7 +409,7 @@ public class CustomerServlet extends HttpServlet {
            
 
             Customer customer =
-                    dao.getCustomerById(customerId);
+                    customerService.getCustomerById(customerId);
 
             if (customer == null) {
 
@@ -446,7 +432,7 @@ public class CustomerServlet extends HttpServlet {
             // Delete
          
 
-            dao.deleteCustomer(customerId);
+            customerService.deleteCustomer(customerId);
 
             mapper.writeValue(
                     resp.getWriter(),
@@ -456,7 +442,10 @@ public class CustomerServlet extends HttpServlet {
                     )
             );
 
-        } catch (NumberFormatException e) {
+                } catch (CustomerNotFoundException e) {
+                        resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                        mapper.writeValue(resp.getWriter(), Collections.singletonMap("error", "Customer not found"));
+                } catch (NumberFormatException e) {
 
             resp.setStatus(
                     HttpServletResponse.SC_BAD_REQUEST
@@ -524,6 +513,12 @@ public class CustomerServlet extends HttpServlet {
 
         return true;
     }
+
+        private int parseQueryInt(String value, int fallback) {
+                if (value == null || value.isBlank()) return fallback;
+                try { return Integer.parseInt(value); }
+                catch (NumberFormatException e) { return fallback; }
+        }
 
 
      

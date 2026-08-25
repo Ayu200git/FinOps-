@@ -3,8 +3,7 @@ package com.finops.repo;
 import com.finops.model.LoanReport;
 import java.util.List;
 
-public class ReportDTO {
-    public interface ReportDAO {
+public interface ReportDAO {
 
         List<LoanReport> getLoanReport();
 
@@ -13,7 +12,5 @@ public class ReportDTO {
         List<LoanReport> getApprovedLoanReport();
 
         List<LoanReport> searchLoanReport(String keyword);
-
-    }
 
 }
