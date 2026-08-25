@@ -196,6 +196,7 @@ const FinOpsUtils = {
             </li>`).join('');
 
         const initials = session ? session.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'GU';
+        const unread = window.FinOpsStorage ? window.FinOpsStorage.getUnreadCount() : 0;
 
         $('#sidebar-wrapper').html(`
             <!-- Brand -->

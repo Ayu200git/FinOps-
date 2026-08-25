@@ -3,16 +3,31 @@ package com.finops;
 import com.finops.model.Customer;
 import com.finops.repo.CustomerDAO;
 import com.finops.repo.CustomerDAOImpl;
+import com.finops.servlet.CustomerServlet;
+import com.finops.servlet.LoginServlet;
+import com.finops.servlet.LogoutServlet;
 import java.util.List;
+import java.io.File;
+import com.finops.filter.AuthenticationFilter;
+import com.finops.filter.AuthorizationFilter;
+import com.finops.servlet.KycServlet;
+
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
+
+import jakarta.servlet.DispatcherType;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.startup.Tomcat;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        if (args != null && args.length > 0 && "server".equalsIgnoreCase(args[0])) {
+            startServer();
+            return;
+        }
+
         CustomerDAO dao = new CustomerDAOImpl();
-
-        System.out.println("==================================================");
-        System.out.println("            CRUD OPERATION TEST SUITE             ");
-        System.out.println("==================================================");
-
         
         System.out.println("\n[Test 1] - Add Customer...");
         Customer customer = new Customer();
@@ -33,7 +48,7 @@ public class Main {
         System.out.println("\n[Test 2] - List All Customers (Verify Database Content)...");
         List<Customer> allCustomers = dao.getAllCustomers();
         System.out.println("ID\tNAME\tEMAIL\t\tMOBILE\t\tCITY\tSTATUS");
-        System.out.println("------------------------------------------------------------------");
+         
         Customer targetCustomer = null;
         for (Customer c : allCustomers) {
             System.out.printf("%d\t%s\t%s\t%s\t%s\t%s%n",
@@ -87,8 +102,79 @@ public class Main {
             System.err.println("Failed to delete customer. Record still exists.");
         }
 
-        System.out.println("\n==================================================");
+         
         System.out.println("          ALL CRUD TESTS COMPLETED SUCCESSFULLY   ");
-        System.out.println("==================================================");
+        System.out.println(" "); 
+    }
+
+    private static void startServer() throws Exception {
+        int port = 8080;
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(port);
+         
+        tomcat.getConnector();
+ 
+        File frontendDirectory = new File("frontend");
+        if (!frontendDirectory.isDirectory()) {
+            frontendDirectory = new File("../frontend");
+        }
+        String frontendDir = frontendDirectory.getCanonicalPath();
+        System.out.println("Resolved frontendDir: " + frontendDir);
+        tomcat.setBaseDir(new File(".").getAbsolutePath());
+
+        Context ctx = tomcat.addContext("", new File(".").getAbsolutePath());
+        ctx.setParentClassLoader(Main.class.getClassLoader());
+ 
+        Tomcat.addServlet(ctx, "static", new com.finops.servlet.StaticFileServlet(frontendDir));
+        ctx.addServletMappingDecoded("/*", "static");
+ 
+        Tomcat.addServlet(ctx, "customerServlet", new CustomerServlet());
+        ctx.addServletMappingDecoded("/api/customers/*", "customerServlet");
+
+        Tomcat.addServlet(ctx, "loginServlet", new LoginServlet());
+        ctx.addServletMappingDecoded("/api/login", "loginServlet");
+        ctx.addServletMappingDecoded("/api/session", "loginServlet");
+ 
+        Tomcat.addServlet(ctx, "logoutServlet", new LogoutServlet());
+        ctx.addServletMappingDecoded("/api/logout", "logoutServlet");
+
+        Tomcat.addServlet(
+        ctx,
+        "kycServlet",
+        new KycServlet()
+);
+
+ctx.addServletMappingDecoded(
+        "/api/kyc/upload",
+        "kycServlet"
+);
+
+        FilterDef authFilter = new FilterDef();
+
+authFilter.setFilterName("AuthenticationFilter");
+authFilter.setFilterClass(
+        AuthenticationFilter.class.getName()
+);
+
+ctx.addFilterDef(authFilter);
+
+
+FilterMap authMapping = new FilterMap();
+
+authMapping.setFilterName("AuthenticationFilter");
+
+authMapping.addURLPattern(
+        "/api/customers/*"
+);
+
+authMapping.setDispatcher(
+        DispatcherType.REQUEST.name()
+);
+
+ctx.addFilterMap(authMapping);
+
+        tomcat.start();
+        System.out.println("Server started at http://localhost:" + port);
+        tomcat.getServer().await();
     }
 }

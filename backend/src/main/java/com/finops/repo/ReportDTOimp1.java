@@ -3,7 +3,7 @@ package com.finops.repo;
 import com.finops.model.LoanReport;
 import java.util.List;
 
-public class ReportDTOimp1 implements ReportDTO.ReportDAO {
+public class ReportDTOimp1 implements ReportDAO {
 
     @Override
     public List<LoanReport> getLoanReport() {

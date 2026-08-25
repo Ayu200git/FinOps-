@@ -7,14 +7,23 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import com.finops.util.EnvLoader;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public class DatabaseUtil {
     private static final String RAW_URL = EnvLoader.get("JDBC_DATABASE_URL", "jdbc:postgresql://localhost:5432/finops");
     private static final String USER = EnvLoader.get("JDBC_DATABASE_USERNAME", "finops");
     private static final String PASSWORD = EnvLoader.get("JDBC_DATABASE_PASSWORD", "finops");
     private static boolean initialized = false;
+    private static HikariDataSource dataSource;
 
     public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("PostgreSQL JDBC driver is not available", e);
+        }
+
         String url = RAW_URL;
         String user = USER;
         String password = PASSWORD;
@@ -50,13 +59,22 @@ public class DatabaseUtil {
         System.out.println("[DatabaseUtil] Connecting to URL: " + url);
         System.out.println("[DatabaseUtil] User: " + user);
 
-        Connection con;
-        if (user == null || user.isEmpty()) {
-            con = DriverManager.getConnection(url);
-        } else {
-            con = DriverManager.getConnection(url, user, password);
+        if (dataSource == null) {
+            synchronized (DatabaseUtil.class) {
+                if (dataSource == null) {
+                    HikariConfig config = new HikariConfig();
+                    config.setJdbcUrl(url);
+                    config.setUsername(user);
+                    config.setPassword(password);
+                    config.setMaximumPoolSize(10);
+                    config.setMinimumIdle(2);
+                    config.setConnectionTimeout(5000);
+                    dataSource = new HikariDataSource(config);
+                }
+            }
         }
 
+        Connection con = dataSource.getConnection();
         checkAndInitialize(con);
         return con;
     }
@@ -78,6 +96,13 @@ public class DatabaseUtil {
                         "city VARCHAR(100), " +
                         "status VARCHAR(20)" +
                         ")");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS dob VARCHAR(20)");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS pincode VARCHAR(10)");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS credit_score INTEGER");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS balance DOUBLE PRECISION DEFAULT 0");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS kyc_status VARCHAR(20) DEFAULT 'PENDING'");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS address VARCHAR(255)");
+                    stmt.execute("ALTER TABLE customer ADD COLUMN IF NOT EXISTS joined_date DATE DEFAULT CURRENT_DATE");
                 stmt.execute("CREATE TABLE IF NOT EXISTS loan (" +
                         "loan_id SERIAL PRIMARY KEY, " +
                         "customer_id INTEGER NOT NULL REFERENCES customer(customer_id), " +

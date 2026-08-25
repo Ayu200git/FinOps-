@@ -82,25 +82,42 @@ public class LoanDAOImpl implements LoanDAO {
     }
 
     @Override
-    public void updateLoan(Loan loan) {
-        String sql = "UPDATE loan SET customer_id = ?, loan_type = ?, amount = ?, interest_rate = ?, tenure_months = ?, status = ?, applied_date = ? WHERE loan_id = ?";
+public boolean updateLoan(Loan loan) {
 
-        try (Connection con = DatabaseUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+    String sql = """
+        UPDATE loan
+        SET customer_id = ?,
+            loan_type = ?,
+            amount = ?,
+            interest_rate = ?,
+            tenure_months = ?,
+            status = ?,
+            applied_date = ?
+        WHERE loan_id = ?
+        """;
 
-            ps.setInt(1, loan.getCustomerId());
-            ps.setString(2, loan.getLoanType());
-            ps.setDouble(3, loan.getAmount());
-            ps.setDouble(4, loan.getInterestRate());
-            ps.setInt(5, loan.getTenureMonths());
-            ps.setString(6, loan.getStatus());
-            ps.setDate(7, java.sql.Date.valueOf(loan.getAppliedDate()));
-            ps.setInt(8, loan.getLoanId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    try (Connection con = DatabaseUtil.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, loan.getCustomerId());
+        ps.setString(2, loan.getLoanType());
+        ps.setDouble(3, loan.getAmount());
+        ps.setDouble(4, loan.getInterestRate());
+        ps.setInt(5, loan.getTenureMonths());
+        ps.setString(6, loan.getStatus());
+        ps.setDate(
+                7,
+                java.sql.Date.valueOf(loan.getAppliedDate())
+        );
+        ps.setInt(8, loan.getLoanId());
+
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
+}
 
     @Override
     public boolean approveLoan(int loanId) {
@@ -133,20 +150,26 @@ public class LoanDAOImpl implements LoanDAO {
             return false;
         }
     }
-
+    
     @Override
-    public void deleteLoan(int id) {
-        String sql = "DELETE FROM loan WHERE loan_id = ?";
+    public boolean deleteLoan(int id) {
 
-        try (Connection con = DatabaseUtil.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    String sql =
+            "DELETE FROM loan WHERE loan_id = ?";
+
+    try (Connection con = DatabaseUtil.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, id);
+
+        return ps.executeUpdate() > 0;
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
     }
-
+}
+     
     private Loan mapRowToLoan(ResultSet rs) throws SQLException {
         Loan loan = new Loan();
         loan.setLoanId(rs.getInt("loan_id"));
