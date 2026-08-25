@@ -1,0 +1,16 @@
+package com.finops.repo;
+
+import com.finops.model.LoanReport;
+import java.util.List;
+
+public interface ReportDAO {
+
+        List<LoanReport> getLoanReport();
+
+        List<LoanReport> getPendingLoanReport();
+
+        List<LoanReport> getApprovedLoanReport();
+
+        List<LoanReport> searchLoanReport(String keyword);
+
+}

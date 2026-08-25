@@ -17,15 +17,27 @@ $(document).ready(function () {
         const btn = $('#loginBtn');
         btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Authenticating…');
 
-        setTimeout(() => {
-            const result = window.FinOpsStorage.login(email, password);
-            if (result.success) {
-                window.FinOpsUtils.showAlert('Login successful!', 'success');
-                setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
-            } else {
-                window.FinOpsUtils.showAlert(result.message, 'error');
-                btn.prop('disabled', false).html('Sign In <i class="fa-solid fa-arrow-right ms-2"></i>');
-            }
-        }, 300);
+        fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            credentials: 'same-origin',
+            body: new URLSearchParams({ username: email, password })
+        }).then(async response => {
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Invalid username or password');
+
+            // Keep only display metadata; the authenticated state is the server cookie.
+            sessionStorage.setItem(FinOpsStorage.KEYS.SESSION, JSON.stringify({
+                email,
+                name: email,
+                role: 'Admin',
+                loginTime: new Date().toISOString()
+            }));
+            window.FinOpsUtils.showAlert('Login successful!', 'success');
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 600);
+        }).catch(error => {
+            window.FinOpsUtils.showAlert(error.message, 'error');
+            btn.prop('disabled', false).html('Sign In <i class="fa-solid fa-arrow-right ms-2"></i>');
+        });
     });
 });

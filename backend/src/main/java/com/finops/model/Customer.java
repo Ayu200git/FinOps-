@@ -7,6 +7,13 @@ public class Customer {
     private String mobile;
     private String city;
     private String status;
+    private String dob;
+    private String pincode;
+    private Integer creditScore;
+    private Double balance;
+    private String kycStatus;
+    private String address;
+    private String joinedDate;
 
     public Customer() {
     }
@@ -67,4 +74,19 @@ public class Customer {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getDob() { return dob; }
+    public void setDob(String dob) { this.dob = dob; }
+    public String getPincode() { return pincode; }
+    public void setPincode(String pincode) { this.pincode = pincode; }
+    public Integer getCreditScore() { return creditScore; }
+    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+    public Double getBalance() { return balance; }
+    public void setBalance(Double balance) { this.balance = balance; }
+    public String getKycStatus() { return kycStatus; }
+    public void setKycStatus(String kycStatus) { this.kycStatus = kycStatus; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
+    public String getJoinedDate() { return joinedDate; }
+    public void setJoinedDate(String joinedDate) { this.joinedDate = joinedDate; }
 }

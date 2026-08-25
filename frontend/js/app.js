@@ -1,13 +1,13 @@
-/**
- * app.js — FinOps Portal
- * Global bindings: sidebar toggle, theme, logout, notifications.
- */
 $(document).ready(function () {
 
     const isLoginPage = window.location.pathname.replace(/\\/g, '/').split('/').pop().match(/^(index\.html|)$/);
 
     if (!isLoginPage) {
-        if (window.FinOpsStorage) window.FinOpsStorage.checkAuth();
+        if (window.FinOpsStorage && !window.FinOpsStorage.getSession()) {
+            window.location.href = 'index.html';
+            return;
+        }
+        verifyBackendSession();
         initNavbar();
     } else {
         if (window.FinOpsStorage && window.FinOpsStorage.getSession()) {
@@ -16,7 +16,22 @@ $(document).ready(function () {
         }
     }
 
-    /* ── Navbar Initialization & Updates ── */
+    function verifyBackendSession() {
+        fetch('/api/session', { credentials: 'same-origin' })
+            .then(response => {
+                if (!response.ok) throw new Error('Session expired');
+                return response.json();
+            })
+            .then(data => {
+                if (!data.authenticated) throw new Error('Session expired');
+            })
+            .catch(() => {
+                sessionStorage.removeItem(FinOpsStorage.KEYS.SESSION);
+                window.location.href = 'index.html';
+            });
+    }
+
+     
     function initNavbar() {
         if (!window.FinOpsStorage) return;
         const session = window.FinOpsStorage.getSession();
@@ -71,7 +86,14 @@ $(document).ready(function () {
     });
 
     /* ── Logout ── */
-    function doLogout(e) { e.preventDefault(); if (window.FinOpsStorage) window.FinOpsStorage.logout(); }
+    function doLogout(e) {
+        e.preventDefault();
+        fetch('/api/logout', { method: 'POST', credentials: 'same-origin' })
+            .finally(() => {
+                sessionStorage.removeItem(FinOpsStorage.KEYS.SESSION);
+                window.location.href = 'index.html';
+            });
+    }
     $(document).on('click', '#globalLogoutBtn, #topbarLogoutBtn', doLogout);
 
     /* ── Theme Toggle ── */
@@ -82,7 +104,7 @@ $(document).ready(function () {
         window.FinOpsStorage.saveSettings(s);
         $('html').attr('data-bs-theme', s.theme);
         
-        // Toggle icon inside button
+         
         const icon = $(this).find('i');
         if (icon.length) {
             if (s.theme === 'dark') icon.removeClass('fa-moon').addClass('fa-sun');
@@ -92,9 +114,9 @@ $(document).ready(function () {
         window.dispatchEvent(new CustomEvent('themeChanged', { detail: { theme: s.theme } }));
     });
 
-    /* ── Notifications Interactions ── */
+     
     $(document).on('click', '.notif-item', function (e) {
-        e.stopPropagation(); // prevent dropdown close
+        e.stopPropagation();  
         const id = $(this).data('id');
         if (window.FinOpsStorage) {
             window.FinOpsStorage.markNotificationRead(id);
@@ -104,7 +126,7 @@ $(document).ready(function () {
 
     $(document).on('click', '#markAllReadBtn', function (e) {
         e.preventDefault();
-        e.stopPropagation(); // prevent dropdown close
+        e.stopPropagation();  
         if (window.FinOpsStorage && window.FinOpsUtils) {
             window.FinOpsStorage.markAllNotificationsRead();
             updateNotifications();

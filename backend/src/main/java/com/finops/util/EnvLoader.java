@@ -19,6 +19,9 @@ public class EnvLoader {
 
         File envFile = new File(ENV_FILE_NAME);
         if (!envFile.exists() || !envFile.isFile()) {
+            envFile = new File("backend", ENV_FILE_NAME);
+        }
+        if (!envFile.exists() || !envFile.isFile()) {
             loaded = true;
             return;
         }

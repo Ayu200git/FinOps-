@@ -68,6 +68,22 @@ public class KycDAOimp implements KycDAO {
     }
 
     @Override
+    public boolean existsByCustomerId(int customerId) {
+        String sql = "SELECT * FROM kyc WHERE customer_id = ?";
+        try (Connection con = DatabaseUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
     public Kyc getKycById(int id) {
         String sql = "SELECT * FROM kyc WHERE kyc_id = ?";
         try (Connection con = DatabaseUtil.getConnection();
@@ -155,7 +171,6 @@ public class KycDAOimp implements KycDAO {
         }
     }
 
-    @Override
     public boolean getKycByCustomer(int customerId) {
         String sql = "SELECT 1 FROM kyc WHERE customer_id = ?";
         try (Connection con = DatabaseUtil.getConnection();

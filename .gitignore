@@ -75,6 +75,10 @@ backend/.env.*
 .env.production.local
 .env.local
 
+# Java build output and local helper artifacts
+backend/target/
+/mvn
+
 # parcel-cache
 .cache
 .parcel-cache
