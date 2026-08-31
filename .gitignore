@@ -67,13 +67,11 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variable files
-.env
 backend/.env
 backend/.env.*
 .env.development.local
 .env.test.local
 .env.production.local
-.env.local
 
 # Java build output and local helper artifacts
 backend/target/
@@ -123,3 +121,4 @@ branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
 .gitignore
+config.bat
