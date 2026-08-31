@@ -1,33 +1,47 @@
-/* dashboard.css */
-.kpi-card { overflow: hidden; position: relative; }
-.kpi-label  { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-secondary); margin-bottom: 0.35rem; }
-.kpi-value  { font-size: 1.65rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.5px; line-height: 1.1; }
-.kpi-sub    { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.3rem; }
-.kpi-icon   { width: 44px; height: 44px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-.kpi-icon-primary { background: var(--primary-soft); color: var(--primary); }
-.kpi-icon-success { background: var(--success-soft); color: var(--success); }
-.kpi-icon-warning { background: var(--warning-soft); color: var(--warning); }
-.kpi-icon-danger  { background: var(--danger-soft);  color: var(--danger);  }
+/* ═══════════════════════════════════════════════════════════════
+   dashboard.css — Dashboard-specific overrides
+   All base KPI, sidebar, table, quick-btn styles are in
+   style.css + components.css. Only dashboard-specific extras here.
+═══════════════════════════════════════════════════════════════ */
 
-.quick-btn {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 0.5rem; padding: 1rem 0.5rem; border-radius: var(--radius-md);
-    background: var(--bg-hover); border: 1px solid var(--border);
-    color: var(--text-secondary); font-size: 0.78rem; font-weight: 600;
-    text-align: center; transition: all var(--transition); cursor: pointer;
+/* Dashboard welcome banner override — uses card with gradient */
+.card.bg-primary.bg-gradient {
+    background: linear-gradient(135deg, var(--fp-primary) 0%, var(--fp-primary-hover) 100%) !important;
+    border: none !important;
+    box-shadow: 0 6px 24px var(--fp-primary-glow) !important;
+    border-radius: var(--fp-radius-lg) !important;
 }
-.quick-btn i { font-size: 1.25rem; color: var(--primary); transition: transform var(--transition); }
-.quick-btn:hover { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-.quick-btn:hover i { transform: scale(1.1); }
+.card.bg-primary.bg-gradient .card-body { padding: 1.35rem 1.75rem; }
+.card.bg-primary.bg-gradient h4 { color: #fff !important; font-weight: 800; }
+.card.bg-primary.bg-gradient p  { color: rgba(255,255,255,0.78); }
+.card.bg-primary.bg-gradient .btn-outline-light {
+    border-color: rgba(255,255,255,0.40);
+    color: rgba(255,255,255,0.90);
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: var(--fp-radius-sm);
+}
+.card.bg-primary.bg-gradient .btn-outline-light:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.65);
+    color: #fff;
+}
 
-.action-badge { font-size: 0.65rem; font-weight: 700; padding: 0.25em 0.55em; border-radius: 4px; }
-.action-LOGIN   { background: var(--info-soft);    color: var(--info);    }
-.action-CREATE  { background: var(--success-soft); color: var(--success); }
-.action-UPDATE  { background: var(--warning-soft); color: var(--warning); }
-.action-DELETE  { background: var(--danger-soft);  color: var(--danger);  }
-.action-APPROVE { background: var(--success-soft); color: var(--success); }
-.action-REJECT  { background: var(--danger-soft);  color: var(--danger);  }
-.action-PAYMENT { background: var(--primary-soft); color: var(--primary); }
-.action-KYC_UPLOAD    { background: var(--info-soft);    color: var(--info); }
-.action-KYC_VERIFIED  { background: var(--success-soft); color: var(--success); }
-.action-KYC_REJECTED  { background: var(--danger-soft);  color: var(--danger); }
+/* Activity log action badges */
+.action-badge {
+    font-size: 0.64rem; font-weight: 700;
+    padding: 0.25em 0.55em;
+    border-radius: var(--fp-radius-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.action-LOGIN    { background: var(--fp-info-soft);    color: var(--fp-info);    }
+.action-CREATE   { background: var(--fp-success-soft); color: var(--fp-success); }
+.action-UPDATE   { background: var(--fp-warning-soft); color: var(--fp-warning); }
+.action-DELETE   { background: var(--fp-danger-soft);  color: var(--fp-danger);  }
+.action-APPROVE  { background: var(--fp-success-soft); color: var(--fp-success); }
+.action-REJECT   { background: var(--fp-danger-soft);  color: var(--fp-danger);  }
+.action-PAYMENT  { background: var(--fp-primary-soft); color: var(--fp-primary); }
+.action-KYC_UPLOAD   { background: var(--fp-info-soft);    color: var(--fp-info);    }
+.action-KYC_VERIFIED { background: var(--fp-success-soft); color: var(--fp-success); }
+.action-KYC_REJECTED { background: var(--fp-danger-soft);  color: var(--fp-danger);  }

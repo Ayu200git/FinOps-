@@ -1,8 +1,9 @@
 $(document).ready(function () {
 
-    const isLoginPage = window.location.pathname.replace(/\\/g, '/').split('/').pop().match(/^(index\.html|)$/);
+    const isAuthFreePage = window.location.pathname.replace(/\\/g, '/').split('/').pop().match(/^(index\.html|register\.html|)$/);
+    const isRegisterPage = window.location.pathname.replace(/\\/g, '/').split('/').pop().match(/^(register\.html)$/);
 
-    if (!isLoginPage) {
+    if (!isAuthFreePage) {
         if (window.FinOpsStorage && !window.FinOpsStorage.getSession()) {
             window.location.href = 'index.html';
             return;
@@ -10,7 +11,8 @@ $(document).ready(function () {
         verifyBackendSession();
         initNavbar();
     } else {
-        if (window.FinOpsStorage && window.FinOpsStorage.getSession()) {
+        // Only redirect to dashboard if logged in and not on register page
+        if (!isRegisterPage && window.FinOpsStorage && window.FinOpsStorage.getSession()) {
             window.location.href = 'dashboard.html';
             return;
         }
@@ -82,7 +84,12 @@ $(document).ready(function () {
     /* ── Sidebar (Mobile Toggle) ── */
     $(document).on('click', '#sidebarToggleBtn', e => {
         e.preventDefault();
-        $('.col-lg-2').toggleClass('show');
+        $('#sidebar-wrapper, .col-lg-2').toggleClass('show');
+    });
+
+    $(document).on('click', '#sidebarCloseBtn', e => {
+        e.preventDefault();
+        $('#sidebar-wrapper, .col-lg-2').removeClass('show');
     });
 
     /* ── Logout ── */

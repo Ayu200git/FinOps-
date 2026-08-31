@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,175 +7,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
-<body data-page="kyc" class="bg-body-secondary">
+<body data-page="kyc">
 
-<div class="container-fluid p-0 min-vh-100 d-flex flex-column">
- 
-    <nav class="navbar navbar-expand-lg bg-body border-bottom px-3 shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold text-primary" href="dashboard.html">FinOps Prime</a>
+<div class="d-flex vh-100 overflow-hidden">
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#kycNavbar" aria-controls="kycNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <!-- Sidebar Wrapper (rendered dynamically by FinOpsUtils) -->
+    <aside id="sidebar-wrapper"
+           class="d-none d-lg-flex flex-column flex-shrink-0 border-end bg-body-tertiary"
+           style="width:260px;"></aside>
 
-            <div class="collapse navbar-collapse" id="kycNavbar">
-                
-                <form class="d-flex ms-lg-3 my-2 my-lg-0" role="search" style="max-width:260px;">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-transparent border-end-0">
-                            <i class="fa-solid fa-magnifying-glass text-secondary"></i>
-                        </span>
-                        <input class="form-control border-start-0 ps-0 bg-transparent" type="search" placeholder="Search KYC..." id="kycSearch">
-                    </div>
-                </form>
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
 
-                <!-- Right Side -->
-                <div class="d-flex align-items-center gap-3 ms-auto mt-2 mt-lg-0">
-                    
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary position-relative" type="button" data-bs-toggle="dropdown" id="notifBellBtn">
-                            <i class="fa-solid fa-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifCountBadge">0</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end p-0 shadow border" style="width:300px;max-height:380px;overflow-y:auto;">
-                            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                                <strong class="small">Notifications</strong>
-                                <a href="#" class="small text-decoration-none" id="markAllReadBtn">Mark all read</a>
-                            </div>
-                            <div id="notifList">
-                                <div class="text-center text-secondary py-3 small">No notifications</div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Topbar Wrapper (rendered dynamically by FinOpsUtils) -->
+        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
 
-                    <!-- Theme Toggle -->
-                    <button class="btn btn-sm btn-outline-secondary" type="button" id="themeQuickToggleBtn" title="Toggle Theme">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-
-                    <!-- Profile Dropdown -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:24px;height:24px;font-size:0.75rem;" id="userInitials">U</div>
-                            <span class="small fw-semibold d-none d-lg-inline" id="userNameDisplay">User</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border">
-                            <li><h6 class="dropdown-header small text-secondary" id="userEmailDisplay">user@example.com</h6></li>
-                            <li><a class="dropdown-item small" href="settings.html"><i class="fa-solid fa-sliders me-2 text-secondary"></i>Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item small text-danger" href="#" id="topbarLogoutBtn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- ═══ MAIN ROW ═══ -->
-    <div class="row g-0 flex-grow-1">
-
-        <!-- ── Sidebar (col-lg-2) ── -->
-        <aside class="col-lg-2 bg-body border-end p-3 d-none d-lg-block">
-            <div class="list-group list-group-flush">
-                <a href="dashboard.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-gauge-high me-2"></i>Dashboard
-                </a>
-                <a href="customers.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-users me-2"></i>Customers
-                </a>
-                <a href="loans.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-hand-holding-dollar me-2"></i>Loans
-                </a>
-                <a href="kyc.html" class="list-group-item list-group-item-action active border-0 rounded mb-1 py-2 fw-semibold">
-                    <i class="fa-solid fa-folder-open me-2"></i>KYC
-                </a>
-                <a href="reports.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-chart-bar me-2"></i>Reports
-                </a>
-                <a href="settings.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-sliders me-2"></i>Settings
-                </a>
-            </div>
-        </aside>
-
-        <!-- ── Main Content (col-lg-10) ── -->
-        <main class="col-12 col-lg-10 p-4">
+        <!-- Main Content Area -->
+        <main class="flex-grow-1 overflow-auto p-3 p-md-4 bg-body-secondary">
 
             <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
                 <div>
-                    <h5 class="fw-bold mb-0">KYC Management</h5>
-                    <small class="text-secondary">Verify and manage customer KYC documents</small>
+                    <h4 class="fw-bold mb-1">KYC Management</h4>
+                    <p class="text-secondary small mb-0">Verify and manage borrower identity and financial compliance papers.</p>
                 </div>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 small">
-                        <li class="breadcrumb-item"><a href="dashboard.html" class="text-decoration-none">Dashboard</a></li>
-                        <li class="breadcrumb-item active">KYC</li>
-                    </ol>
-                </nav>
-            </div>
-
-            <!-- ── Stats Row ── -->
-            <div class="row g-3 mb-4">
-                <div class="col-6 col-md-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center py-3">
-                            <div class="text-secondary small fw-semibold text-uppercase mb-1" style="font-size:0.7rem;letter-spacing:0.6px;">Total Docs</div>
-                            <h3 class="fw-bold mb-0" id="statTotal">12</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center py-3">
-                            <div class="text-secondary small fw-semibold text-uppercase mb-1" style="font-size:0.7rem;letter-spacing:0.6px;">Verified</div>
-                            <h3 class="fw-bold mb-0 text-success" id="statVerified">7</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center py-3">
-                            <div class="text-secondary small fw-semibold text-uppercase mb-1" style="font-size:0.7rem;letter-spacing:0.6px;">Pending</div>
-                            <h3 class="fw-bold mb-0 text-warning" id="statPending">3</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body text-center py-3">
-                            <div class="text-secondary small fw-semibold text-uppercase mb-1" style="font-size:0.7rem;letter-spacing:0.6px;">Rejected</div>
-                            <h3 class="fw-bold mb-0 text-danger" id="statRejected">2</h3>
-                        </div>
-                    </div>
+                <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadKycModal" id="btnUploadKyc">
+                        <i class="fa-solid fa-cloud-arrow-up me-2"></i>Upload KYC
+                    </button>
                 </div>
             </div>
- 
-            <div class="card border-0 shadow-sm">
 
-                <!-- Card Header: Search + Filters + Button -->
-                <div class="card-header bg-transparent border-bottom py-3">
+            <!-- Stats Row -->
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center py-3">
+                            <div class="kpi-label">Total Submissions</div>
+                            <div class="kpi-value text-body" id="statTotal">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center py-3">
+                            <div class="kpi-label">Verified</div>
+                            <div class="kpi-value text-success" id="statVerified">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center py-3">
+                            <div class="kpi-label">Pending</div>
+                            <div class="kpi-value text-warning" id="statPending">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body text-center py-3">
+                            <div class="kpi-label">Rejected</div>
+                            <div class="kpi-value text-danger" id="statRejected">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search & Filters Toolbar -->
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body">
                     <div class="row g-2 align-items-center">
-                        <div class="col-12 col-md-4">
-                            <div class="input-group input-group-sm">
-                                <span class="input-group-text bg-transparent border-end-0">
+                        <div class="col-12 col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-body border-end-0">
                                     <i class="fa-solid fa-magnifying-glass text-secondary"></i>
                                 </span>
-                                <input type="text" class="form-control border-start-0 ps-0" id="tableKycSearch" placeholder="Search by Customer ID, Name…">
+                                <input type="text" class="form-control border-start-0 ps-0" id="tableKycSearch" placeholder="Search by Customer ID, name or email…">
                             </div>
                         </div>
-                        <div class="col-6 col-md-2">
-                            <select class="form-select form-select-sm" id="kycStatusFilter">
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="kycStatusFilter">
                                 <option value="">All Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Verified">Verified</option>
                                 <option value="Rejected">Rejected</option>
                             </select>
                         </div>
-                        <div class="col-6 col-md-2">
-                            <select class="form-select form-select-sm" id="kycDocFilter">
+                        <div class="col-6 col-md-3">
+                            <select class="form-select" id="kycDocFilter">
                                 <option value="">All Documents</option>
                                 <option value="Aadhaar">Aadhaar</option>
                                 <option value="PAN">PAN</option>
@@ -183,61 +104,43 @@
                                 <option value="Salary Slip">Salary Slip</option>
                             </select>
                         </div>
-                        <div class="col-12 col-md-4 text-md-end">
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadKycModal" id="btnUploadKyc">
-                                <i class="fa-solid fa-upload me-1"></i> Upload KYC
-                            </button>
-                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- KYC Table -->
+            <!-- KYC Directory Table Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-body border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+                    <span class="fw-semibold">
+                        <i class="fa-solid fa-folder-open text-primary me-2"></i>KYC Verification Register
+                    </span>
+                    <small class="text-secondary" id="kycCountLabel">Showing records</small>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-hover table-sm align-middle mb-0">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-light">
                             <tr>
                                 <th class="ps-3">Customer ID</th>
                                 <th>Customer Name</th>
-                                <th class="text-center">
-                                    <i class="fa-solid fa-id-card me-1"></i>Aadhaar
-                                </th>
-                                <th class="text-center">
-                                    <i class="fa-solid fa-credit-card me-1"></i>PAN
-                                </th>
-                                <th class="text-center">
-                                    <i class="fa-solid fa-image me-1"></i>Photo
-                                </th>
-                                <th class="text-center">
-                                    <i class="fa-solid fa-file-lines me-1"></i>Salary Slip
-                                </th>
+                                <th class="text-center"><i class="fa-solid fa-id-card me-1"></i>Aadhaar</th>
+                                <th class="text-center"><i class="fa-solid fa-credit-card me-1"></i>PAN</th>
+                                <th class="text-center"><i class="fa-solid fa-image me-1"></i>Photo</th>
+                                <th class="text-center"><i class="fa-solid fa-file-lines me-1"></i>Salary Slip</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-end pe-3">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="kycTableBody">
-                        
-                        </tbody>
+                        <tbody id="kycTableBody"></tbody>
                     </table>
                 </div>
-
-                <!-- Pagination Footer -->
                 <div class="card-footer bg-transparent border-top d-flex justify-content-between align-items-center py-2">
-                    <small class="text-secondary" id="kycCountLabel">Showing 0–0 of 0 records</small>
-                    <nav>
-                        <ul class="pagination pagination-sm mb-0" id="kycPagination">
-                            
-                        </ul>
-                    </nav>
+                    <div></div>
+                    <div id="kycPagination"></div>
                 </div>
-
             </div>
+
         </main>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-body text-center py-3 border-top mt-auto small text-secondary">
-        &copy; 2026 FinOps Prime. All rights reserved.
-    </footer>
 </div>
 
 <!-- MODAL — Upload KYC -->
@@ -246,12 +149,9 @@
         <div class="modal-content border-0 shadow">
 
             <div class="modal-header border-bottom">
-                <div>
-                    <h5 class="modal-title fw-bold" id="uploadKycModalLabel">
-                        <i class="fa-solid fa-upload me-2 text-primary"></i>Upload KYC Documents
-                    </h5>
-                    <small class="text-secondary">Fill all details and attach required documents</small>
-                </div>
+                <h5 class="modal-title fw-bold" id="uploadKycModalLabel">
+                    <i class="fa-solid fa-cloud-arrow-up me-2 text-primary"></i>Upload KYC Documents
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -259,81 +159,72 @@
                 <div class="modal-body">
 
                     <!-- Section: Customer -->
-                    <p class="small fw-semibold text-uppercase text-secondary mb-2" style="letter-spacing:0.6px;">
-                        <i class="fa-solid fa-user me-1"></i>Customer Info
-                    </p>
-                    <div class="row g-3 mb-4">
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:0.72rem;letter-spacing:0.6px;">
+                        <i class="fa-solid fa-user me-1"></i>Customer Selection
+                    </div>
+                    <div class="row g-3 mb-3">
                         <div class="col-12">
-                            <label class="form-label fw-medium small">Customer <span class="text-danger">*</span></label>
-                            <select class="form-select form-select-sm" id="kycCustomer" required>
+                            <label class="form-label small fw-semibold" for="kycCustomer">Select Borrower <span class="text-danger">*</span></label>
+                            <select class="form-select" id="kycCustomer" required>
                                 <option value="">— Select Customer —</option>
-                                <option value="CUST-001">CUST-001 — Rahul Kumar</option>
-                                <option value="CUST-002">CUST-002 — Priya Sharma</option>
-                                <option value="CUST-003">CUST-003 — Amit Mishra</option>
                             </select>
                         </div>
                     </div>
 
-                    <hr class="my-3">
-
-                
-                    <p class="small fw-semibold text-uppercase text-secondary mb-3" style="letter-spacing:0.6px;">
-                        <i class="fa-solid fa-file me-1"></i>Documents
-                    </p>
+                    <!-- Section: Documents -->
+                    <div class="fw-semibold text-uppercase text-secondary mb-2" style="font-size:0.72rem;letter-spacing:0.6px;">
+                        <i class="fa-solid fa-file-shield me-1"></i>Verification Papers
+                    </div>
 
                     <div class="row g-3">
-                         
                         <div class="col-md-6">
-                            <label class="form-label fw-medium small">
+                            <label class="form-label small fw-semibold">
                                 <i class="fa-solid fa-id-card me-1 text-primary"></i>Aadhaar Card
                             </label>
-                            <input type="text" class="form-control form-control-sm mb-2" id="kycAadhaarNum" placeholder="XXXX-XXXX-XXXX">
+                            <input type="text" class="form-control mb-2" id="kycAadhaarNum" placeholder="XXXX-XXXX-XXXX">
                             <input type="file" class="form-control form-control-sm" id="kycAadhaarFile" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="form-text">PDF, JPG, PNG — Max 2MB</div>
+                            <div class="form-text small">PDF, JPG, PNG — Max 2MB</div>
                         </div>
 
-                      
                         <div class="col-md-6">
-                            <label class="form-label fw-medium small">
+                            <label class="form-label small fw-semibold">
                                 <i class="fa-solid fa-credit-card me-1 text-success"></i>PAN Card
                             </label>
-                            <input type="text" class="form-control form-control-sm mb-2" id="kycPanNum" placeholder="ABCDE1234F">
+                            <input type="text" class="form-control mb-2" id="kycPanNum" placeholder="ABCDE1234F">
                             <input type="file" class="form-control form-control-sm" id="kycPanFile" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="form-text">PDF, JPG, PNG — Max 2MB</div>
+                            <div class="form-text small">PDF, JPG, PNG — Max 2MB</div>
                         </div>
- 
+
                         <div class="col-md-6">
-                            <label class="form-label fw-medium small">
+                            <label class="form-label small fw-semibold">
                                 <i class="fa-solid fa-image me-1 text-warning"></i>Passport Photo
                             </label>
-                            <input type="file" class="form-control form-control-sm" id="kycPhotoFile" accept=".jpg,.jpeg,.png">
-                            <div class="form-text">JPG, PNG — Max 1MB</div>
+                            <input type="file" class="form-control" id="kycPhotoFile" accept=".jpg,.jpeg,.png">
+                            <div class="form-text small">JPG, PNG — Max 1MB</div>
                         </div>
- 
+
                         <div class="col-md-6">
-                            <label class="form-label fw-medium small">
-                                <i class="fa-solid fa-file-lines me-1 text-info"></i>Salary Slip
+                            <label class="form-label small fw-semibold">
+                                <i class="fa-solid fa-file-lines me-1 text-info"></i>Salary Slip / Income Proof
                             </label>
-                            <input type="file" class="form-control form-control-sm" id="kycSalaryFile" accept=".pdf,.jpg,.jpeg,.png">
-                            <div class="form-text">PDF, JPG, PNG — Max 2MB</div>
+                            <input type="file" class="form-control" id="kycSalaryFile" accept=".pdf,.jpg,.jpeg,.png">
+                            <div class="form-text small">PDF, JPG, PNG — Max 2MB</div>
                         </div>
- 
+
                         <div class="col-12">
-                            <label class="form-label fw-medium small">
+                            <label class="form-label small fw-semibold" for="kycRemarks">
                                 <i class="fa-solid fa-comment me-1 text-secondary"></i>Remarks (Optional)
                             </label>
-                            <textarea class="form-control form-control-sm" id="kycRemarks" rows="2" placeholder="Any special notes about this KYC submission…"></textarea>
+                            <textarea class="form-control" id="kycRemarks" rows="2" placeholder="Any special notes about this KYC submission…"></textarea>
                         </div>
                     </div>
 
                 </div>
 
                 <div class="modal-footer border-top">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-                        <i class="fa-solid fa-xmark me-1"></i>Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary btn-sm" id="btnSubmitKyc">
-                        <i class="fa-solid fa-cloud-arrow-up me-1"></i>Submit KYC
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitKyc">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Submit KYC
                     </button>
                 </div>
             </form>
@@ -346,12 +237,11 @@
 <div class="modal fade" id="viewKycModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header">
+            <div class="modal-header border-bottom">
                 <h5 class="modal-title fw-bold"><i class="fa-solid fa-eye me-2 text-primary"></i>KYC Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="kycDetailBody">
-                
                 <div class="row g-2">
                     <div class="col-6"><div class="small text-secondary">Customer ID</div><div class="fw-semibold">CUST-001</div></div>
                     <div class="col-6"><div class="small text-secondary">Name</div><div class="fw-semibold">Rahul Kumar</div></div>
@@ -362,7 +252,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -373,17 +263,17 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header border-bottom">
-                <h5 class="modal-title fw-bold text-danger"><i class="fa-solid fa-xmark me-2"></i>Reject KYC</h5>
+                <h5 class="modal-title fw-bold text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>Reject KYC</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="rejectKycId">
-                <label class="form-label small fw-semibold">Rejection Reason <span class="text-danger">*</span></label>
-                <textarea class="form-control form-control-sm" id="rejectKycRemarks" rows="3" placeholder="Explain reason for rejection…"></textarea>
+                <label class="form-label small fw-semibold" for="rejectKycRemarks">Rejection Reason <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="rejectKycRemarks" rows="3" placeholder="Explain reason for rejection…"></textarea>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger btn-sm" id="btnConfirmReject">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmReject">
                     <i class="fa-solid fa-xmark me-1"></i>Reject
                 </button>
             </div>

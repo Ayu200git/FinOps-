@@ -1,40 +1,46 @@
+/* ═══════════════════════════════════════════════════════════════
+   reports.css — Reports & Analytics Specific Styles
+═══════════════════════════════════════════════════════════════ */
+
 .chart-report-wrapper {
     min-height: 280px;
     position: relative;
 }
 
 .report-stat-widget {
-    border-left: 3px solid var(--border-color);
+    border-left: 3px solid var(--fp-border);
     padding-left: 1rem;
     margin-bottom: 1.25rem;
 }
 
 .report-stat-widget.primary {
-    border-left-color: var(--primary-color);
+    border-left-color: var(--fp-primary);
 }
 
 .report-stat-widget.success {
-    border-left-color: var(--success-color);
+    border-left-color: var(--fp-success);
 }
 
 .report-stat-widget.warning {
-    border-left-color: var(--warning-color);
+    border-left-color: var(--fp-warning);
 }
 
 .report-stat-widget.danger {
-    border-left-color: var(--danger-color);
+    border-left-color: var(--fp-danger);
 }
 
 .report-stat-widget h5 {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 0.25rem;
+    color: var(--fp-text-muted);
 }
 
 .report-stat-widget h3 {
     font-weight: 700;
     margin-bottom: 0;
+    color: var(--fp-text);
 }
 
 /* Print Styles */

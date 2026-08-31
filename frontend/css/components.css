@@ -1,0 +1,474 @@
+/* ═══════════════════════════════════════════════════════════════
+   components.css — FinOps Prime Shared Component Library
+   Unified components for all pages: Dashboard, Customers, Loans,
+   KYC, Reports, Settings, and Modals.
+═══════════════════════════════════════════════════════════════ */
+
+/* ──────────────────────────────────────────────
+   DYNAMIC SIDEBAR (#sidebar-wrapper)
+────────────────────────────────────────────── */
+#sidebar-wrapper {
+    background-color: var(--fp-sidebar-bg) !important;
+    border-right: 1px solid var(--fp-sidebar-border) !important;
+    width: var(--fp-sidebar-width) !important;
+    min-width: var(--fp-sidebar-width) !important;
+}
+
+#sidebar-wrapper > .d-flex.border-bottom {
+    padding: 0.85rem 1.15rem !important;
+    border-bottom: 1px solid var(--fp-sidebar-border) !important;
+    height: var(--fp-topbar-height);
+}
+
+#sidebar-wrapper .bg-primary.rounded-2 {
+    background: linear-gradient(135deg, var(--fp-primary), var(--fp-primary-hover)) !important;
+    box-shadow: 0 3px 10px var(--fp-primary-glow);
+    border-radius: var(--fp-radius-sm) !important;
+}
+
+#sidebar-wrapper .nav-link {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--fp-text-muted) !important;
+    border-radius: var(--fp-radius-sm) !important;
+    padding: 0.55rem 0.85rem !important;
+    margin-bottom: 2px;
+    transition: var(--fp-transition);
+}
+#sidebar-wrapper .nav-link i.fa-fw {
+    width: 18px;
+    font-size: 0.88rem;
+    opacity: 0.75;
+}
+#sidebar-wrapper .nav-link:hover {
+    background-color: var(--fp-surface-hover) !important;
+    color: var(--fp-primary) !important;
+    padding-left: 1.1rem !important;
+}
+#sidebar-wrapper .nav-link:hover i { opacity: 1; }
+
+#sidebar-wrapper .nav-link.active {
+    background: linear-gradient(135deg, var(--fp-primary), var(--fp-primary-hover)) !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 12px var(--fp-primary-glow);
+}
+#sidebar-wrapper .nav-link.active i { opacity: 1; }
+
+#sidebar-wrapper .text-uppercase.text-secondary {
+    font-size: 0.63rem !important;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--fp-text-subtle) !important;
+    text-transform: uppercase;
+}
+
+#sidebar-wrapper > .border-top {
+    border-top: 1px solid var(--fp-sidebar-border) !important;
+    padding: 0.85rem 1.15rem !important;
+}
+#sidebar-wrapper .border-top .bg-primary.rounded-circle {
+    background: linear-gradient(135deg, var(--fp-primary), var(--fp-primary-hover)) !important;
+}
+
+/* ──────────────────────────────────────────────
+   DYNAMIC TOPBAR (#topbar-wrapper)
+────────────────────────────────────────────── */
+#topbar-wrapper {
+    background-color: var(--fp-topbar-bg) !important;
+}
+#topbar-wrapper .navbar {
+    background-color: var(--fp-topbar-bg) !important;
+    border-bottom: 1px solid var(--fp-topbar-border) !important;
+    height: var(--fp-topbar-height);
+    box-shadow: var(--fp-shadow-xs);
+}
+#topbar-wrapper .btn-outline-secondary {
+    border-color: var(--fp-border) !important;
+    color: var(--fp-text-muted) !important;
+    border-radius: var(--fp-radius-sm) !important;
+    font-size: 0.82rem;
+}
+#topbar-wrapper .btn-outline-secondary:hover {
+    background: var(--fp-surface-hover) !important;
+    color: var(--fp-primary) !important;
+    border-color: var(--fp-primary) !important;
+}
+#topbar-wrapper .bg-primary.rounded-circle {
+    background: linear-gradient(135deg, var(--fp-primary), var(--fp-primary-hover)) !important;
+}
+
+/* ──────────────────────────────────────────────
+   TABLES — Professional Banking Aesthetic
+────────────────────────────────────────────── */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: var(--fp-surface-hover);
+    color: var(--fp-text);
+    font-size: 0.86rem;
+    margin-bottom: 0;
+}
+
+.table thead th {
+    font-size: 0.70rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: var(--fp-text-muted) !important;
+    background-color: var(--fp-surface-alt) !important;
+    border-bottom: 1px solid var(--fp-border) !important;
+    border-top: none !important;
+    padding: 0.8rem 1rem !important;
+    white-space: nowrap;
+    vertical-align: middle !important;
+}
+
+.table tbody td {
+    padding: 0.85rem 1rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid var(--fp-border) !important;
+    color: var(--fp-text);
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none !important;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: var(--fp-surface-hover) !important;
+}
+
+.table-responsive {
+    border-radius: 0 0 var(--fp-radius-lg) var(--fp-radius-lg);
+}
+
+/* ──────────────────────────────────────────────
+   PROFESSIONAL ACTION BUTTONS
+────────────────────────────────────────────── */
+.table td .btn-group,
+.table td .btn-group-sm {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.table td .btn-group > .btn,
+.table td .btn-group-sm > .btn {
+    border-radius: var(--fp-radius-sm) !important;
+    margin: 0 !important;
+}
+
+/* Base icon action button styling */
+.table td .btn-sm,
+.table td .btn-outline-secondary,
+.table td .btn-outline-primary,
+.table td .btn-outline-success,
+.table td .btn-outline-danger,
+.table td .btn-outline-warning,
+.table td .btn-outline-info {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--fp-radius-sm) !important;
+    font-size: 0.80rem !important;
+    transition: var(--fp-transition);
+    border-width: 1px;
+}
+
+/* View Button */
+.table td .btn-view,
+.table td .btn-outline-secondary {
+    border-color: var(--fp-border) !important;
+    color: var(--fp-text-muted) !important;
+    background: transparent;
+}
+.table td .btn-view:hover,
+.table td .btn-outline-secondary:hover {
+    background: var(--fp-surface-hover) !important;
+    color: var(--fp-primary) !important;
+    border-color: var(--fp-primary) !important;
+}
+
+/* Edit / Pay Button */
+.table td .btn-edit,
+.table td .btn-pay,
+.table td .btn-outline-primary {
+    border-color: rgba(79, 70, 229, 0.3) !important;
+    color: var(--fp-primary) !important;
+    background: var(--fp-primary-soft) !important;
+}
+.table td .btn-edit:hover,
+.table td .btn-pay:hover,
+.table td .btn-outline-primary:hover {
+    background: var(--fp-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--fp-primary) !important;
+}
+
+/* Approve / Verify Button */
+.table td .btn-approve,
+.table td .btn-verify,
+.table td .btn-outline-success {
+    border-color: rgba(5, 150, 105, 0.3) !important;
+    color: var(--fp-success) !important;
+    background: var(--fp-success-soft) !important;
+}
+.table td .btn-approve:hover,
+.table td .btn-verify:hover,
+.table td .btn-outline-success:hover {
+    background: var(--fp-success) !important;
+    color: #ffffff !important;
+    border-color: var(--fp-success) !important;
+}
+
+/* Reject / Delete Button */
+.table td .btn-reject,
+.table td .btn-del,
+.table td .btn-outline-danger {
+    border-color: rgba(220, 38, 38, 0.3) !important;
+    color: var(--fp-danger) !important;
+    background: var(--fp-danger-soft) !important;
+}
+.table td .btn-reject:hover,
+.table td .btn-del:hover,
+.table td .btn-outline-danger:hover {
+    background: var(--fp-danger) !important;
+    color: #ffffff !important;
+    border-color: var(--fp-danger) !important;
+}
+
+/* Recommend Button */
+.table td .btn-recommend,
+.table td .btn-outline-info {
+    border-color: rgba(2, 132, 199, 0.3) !important;
+    color: var(--fp-info) !important;
+    background: var(--fp-info-soft) !important;
+}
+.table td .btn-recommend:hover,
+.table td .btn-outline-info:hover {
+    background: var(--fp-info) !important;
+    color: #ffffff !important;
+    border-color: var(--fp-info) !important;
+}
+
+/* ──────────────────────────────────────────────
+   STATUS BADGES
+────────────────────────────────────────────── */
+.badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.32em 0.75em;
+    border-radius: 100px !important;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+.badge.text-bg-success {
+    background: var(--fp-success-soft) !important;
+    color: var(--fp-success) !important;
+    border: 1px solid rgba(5, 150, 105, 0.25);
+}
+.badge.text-bg-warning {
+    background: var(--fp-warning-soft) !important;
+    color: var(--fp-warning) !important;
+    border: 1px solid rgba(217, 119, 6, 0.25);
+}
+.badge.text-bg-danger {
+    background: var(--fp-danger-soft) !important;
+    color: var(--fp-danger) !important;
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+.badge.text-bg-primary {
+    background: var(--fp-primary-soft) !important;
+    color: var(--fp-primary) !important;
+    border: 1px solid rgba(79, 70, 229, 0.25);
+}
+.badge.text-bg-info {
+    background: var(--fp-info-soft) !important;
+    color: var(--fp-info) !important;
+    border: 1px solid rgba(2, 132, 199, 0.25);
+}
+.badge.text-bg-secondary,
+.badge.text-bg-light {
+    background: var(--fp-surface-hover) !important;
+    color: var(--fp-text-muted) !important;
+    border: 1px solid var(--fp-border);
+}
+
+/* Loan Types */
+.badge-loan-personal   { background: rgba(124,58,237,0.15) !important; color: #a78bfa !important; border: 1px solid rgba(124,58,237,0.3); }
+.badge-loan-business   { background: rgba(37,99,235,0.15) !important;  color: #60a5fa !important;  border: 1px solid rgba(37,99,235,0.3); }
+.badge-loan-home       { background: rgba(5,150,105,0.15) !important;  color: #34d399 !important;  border: 1px solid rgba(5,150,105,0.3); }
+.badge-loan-vehicle    { background: rgba(217,119,6,0.15) !important;  color: #fbbf24 !important;  border: 1px solid rgba(217,119,6,0.3); }
+.badge-loan-education  { background: rgba(219,39,119,0.15) !important; color: #f472b6 !important; border: 1px solid rgba(219,39,119,0.3); }
+.badge-loan-gold       { background: rgba(202,138,4,0.15) !important;  color: #facc15 !important;  border: 1px solid rgba(202,138,4,0.3); }
+
+/* ──────────────────────────────────────────────
+   PAGINATION
+────────────────────────────────────────────── */
+.pagination {
+    gap: 3px;
+    margin: 0;
+}
+.pagination .page-link {
+    border-radius: var(--fp-radius-sm) !important;
+    border: 1px solid var(--fp-border) !important;
+    color: var(--fp-text-muted) !important;
+    background: var(--fp-surface) !important;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 0.35rem 0.65rem;
+    min-width: 32px;
+    text-align: center;
+    transition: var(--fp-transition);
+    margin: 0 !important;
+}
+.pagination .page-link:hover {
+    background: var(--fp-surface-hover) !important;
+    color: var(--fp-primary) !important;
+    border-color: var(--fp-primary) !important;
+}
+.pagination .page-item.active .page-link {
+    background: var(--fp-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--fp-primary) !important;
+    box-shadow: 0 2px 8px var(--fp-primary-glow);
+}
+.pagination .page-item.disabled .page-link {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+/* ──────────────────────────────────────────────
+   FORM INPUTS & SELECTS
+────────────────────────────────────────────── */
+.form-control, .form-select {
+    font-size: 0.875rem;
+    border-color: var(--fp-border);
+    border-radius: var(--fp-radius-sm) !important;
+    background-color: var(--fp-surface);
+    color: var(--fp-text);
+    height: 38px;
+    transition: var(--fp-transition);
+}
+.form-control::placeholder { color: var(--fp-text-subtle); }
+.form-control-sm, .form-select-sm { height: 32px !important; font-size: 0.82rem !important; }
+
+.input-group-text {
+    background: transparent;
+    border-color: var(--fp-border);
+    color: var(--fp-text-muted);
+}
+
+/* ──────────────────────────────────────────────
+   MODALS & OFFCANVAS
+────────────────────────────────────────────── */
+.modal-content {
+    border: 1px solid var(--fp-border) !important;
+    border-radius: var(--fp-radius-lg) !important;
+    box-shadow: var(--fp-shadow-lg) !important;
+    background: var(--fp-surface) !important;
+}
+.modal-header {
+    border-bottom: 1px solid var(--fp-border) !important;
+    padding: 1.1rem 1.4rem !important;
+}
+.modal-header .modal-title {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--fp-text) !important;
+}
+.modal-body { padding: 1.4rem !important; }
+.modal-footer {
+    border-top: 1px solid var(--fp-border) !important;
+    padding: 0.9rem 1.4rem !important;
+    background: var(--fp-surface-alt) !important;
+    border-radius: 0 0 var(--fp-radius-lg) var(--fp-radius-lg) !important;
+}
+
+.offcanvas {
+    background: var(--fp-surface) !important;
+    border-left: 1px solid var(--fp-border) !important;
+    box-shadow: var(--fp-shadow-lg) !important;
+}
+.offcanvas-header {
+    border-bottom: 1px solid var(--fp-border) !important;
+    padding: 1.1rem 1.4rem !important;
+}
+.offcanvas-header .offcanvas-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--fp-text);
+}
+.offcanvas-body { padding: 1.4rem; }
+
+/* ──────────────────────────────────────────────
+   DROPDOWNS
+────────────────────────────────────────────── */
+.dropdown-menu {
+    border: 1px solid var(--fp-border) !important;
+    border-radius: var(--fp-radius-md) !important;
+    box-shadow: var(--fp-shadow-md) !important;
+    background: var(--fp-surface) !important;
+    font-size: 0.875rem;
+    min-width: 170px;
+    padding: 0.4rem;
+}
+.dropdown-item {
+    border-radius: var(--fp-radius-sm);
+    padding: 0.45rem 0.8rem;
+    color: var(--fp-text-muted);
+    font-size: 0.82rem;
+    transition: var(--fp-transition);
+}
+.dropdown-item:hover {
+    background: var(--fp-surface-hover);
+    color: var(--fp-text);
+}
+.dropdown-item.text-danger:hover {
+    background: var(--fp-danger-soft);
+    color: var(--fp-danger);
+}
+.dropdown-divider { border-color: var(--fp-border); margin: 0.3rem 0; }
+.dropdown-header { font-size: 0.70rem; color: var(--fp-text-subtle); padding: 0.4rem 0.8rem; }
+
+/* ──────────────────────────────────────────────
+   BACKGROUND & BORDER CONSISTENCY
+────────────────────────────────────────────── */
+.bg-body-secondary { background-color: var(--fp-surface-alt) !important; }
+.bg-body-tertiary  { background-color: var(--fp-surface) !important; }
+.bg-body           { background-color: var(--fp-surface) !important; }
+
+.border-bottom { border-bottom-color: var(--fp-border) !important; }
+.border-end    { border-right-color: var(--fp-border) !important; }
+.border-top    { border-top-color: var(--fp-border) !important; }
+.border        { border-color: var(--fp-border) !important; }
+
+/* ──────────────────────────────────────────────
+   RESPONSIVE BREAKPOINTS
+────────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+    #sidebar-wrapper {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        height: 100vh !important;
+        z-index: 1050;
+        transform: translateX(-100%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: var(--fp-shadow-lg);
+    }
+    #sidebar-wrapper.show {
+        transform: translateX(0) !important;
+        display: flex !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    main { padding: 1rem !important; }
+    .modal-dialog { margin: 0.5rem; }
+}

@@ -211,7 +211,7 @@ public class CustomerServlet extends HttpServlet {
             );
 
         } catch (Exception e) {
-
+            e.printStackTrace();
             resp.setStatus(
                     HttpServletResponse.SC_BAD_REQUEST
             );
@@ -220,7 +220,7 @@ public class CustomerServlet extends HttpServlet {
                     resp.getWriter(),
                     Collections.singletonMap(
                             "error",
-                            "Invalid JSON payload"
+                            e.getMessage() != null ? e.getMessage() : "Invalid JSON payload"
                     )
             );
         }

@@ -15,7 +15,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean addCustomer(Customer customer) {
-        String sql = "INSERT INTO customer (customer_name, email, mobile, city, status, dob, pincode, credit_score, balance, kyc_status, address, joined_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(?, CURRENT_DATE))";
+        String sql = "INSERT INTO customer (customer_name, email, mobile, city, status, dob, pincode, credit_score, balance, kyc_status, address, joined_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE(CAST(? AS DATE), CURRENT_DATE))";
 
         try (Connection con = DatabaseUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -111,7 +111,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean updateCustomer(Customer customer) {
-        String sql = "UPDATE customer SET customer_name = ?, email = ?, mobile = ?, city = ?, status = ?, dob = ?, pincode = ?, credit_score = ?, balance = ?, kyc_status = ?, address = ?, joined_date = COALESCE(?, joined_date) WHERE customer_id = ?";
+        String sql = "UPDATE customer SET customer_name = ?, email = ?, mobile = ?, city = ?, status = ?, dob = ?, pincode = ?, credit_score = ?, balance = ?, kyc_status = ?, address = ?, joined_date = COALESCE(CAST(? AS DATE), joined_date) WHERE customer_id = ?";
 
         try (Connection con = DatabaseUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

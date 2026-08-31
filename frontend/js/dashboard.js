@@ -1,10 +1,8 @@
- 
 $(document).ready(function () {
      
-    const settings = window.FinOpsStorage ? window.FinOpsStorage.getSettings() : {};
-    const theme = settings.theme || 'dark';
-    $('html').attr('data-bs-theme', theme);
-    $('#themeQuickToggleBtn i').removeClass('fa-moon fa-sun').addClass(theme === 'dark' ? 'fa-sun' : 'fa-moon');
+    if (window.FinOpsUtils) {
+        window.FinOpsUtils.renderShell('dashboard');
+    }
 
     let chartCash = null, chartType = null;
 

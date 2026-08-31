@@ -8,11 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import com.finops.util.EnvLoader;
+import com.finops.model.User;
+import com.finops.repo.UserDAO;
+import com.finops.repo.UserDAOImpl;
+import com.finops.util.PasswordUtil;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
+    private final UserDAO userDAO = new UserDAOImpl();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -20,25 +24,45 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
         resp.setContentType("application/json;charset=UTF-8");
 
-        String configuredUsername = EnvLoader.get("FINOPS_ADMIN_USERNAME", "");
-        String configuredPassword = EnvLoader.get("FINOPS_ADMIN_PASSWORD", "");
-        boolean authenticated = !configuredUsername.isEmpty()
-            && !configuredPassword.isEmpty()
-            && configuredUsername.equals(username)
-            && configuredPassword.equals(password);
-        if (!authenticated) {
+        if (username == null || password == null || username.trim().isEmpty() || password.trim().isEmpty()) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().write("{\"error\": \"Username and password are required\"}");
+            return;
+        }
+
+        User user = userDAO.findByUsername(username.trim());
+        if (user == null) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().write("{\"error\": \"Invalid username or password\"}");
+            return;
+        }
+
+        if (!"ACTIVE".equalsIgnoreCase(user.getStatus())) {
+            resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            resp.getWriter().write("{\"error\": \"Your account registration is " + user.getStatus().toLowerCase() + ". Please wait for approval.\" }");
+            return;
+        }
+
+        if (!PasswordUtil.checkPassword(password, user.getPasswordHash())) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             resp.getWriter().write("{\"error\": \"Invalid username or password\"}");
             return;
         }
 
         HttpSession session = req.getSession(true);
-        session.setAttribute("username", username);
+        session.setAttribute("username", user.getUsername());
+        session.setAttribute("name", user.getFullName());
+        session.setAttribute("role", user.getRole());
         req.changeSessionId();
-        session.setAttribute("role", "ADMIN");
 
         resp.setStatus(HttpServletResponse.SC_OK);
-        resp.getWriter().write("{\"message\": \"Login successful\"}");
+        resp.getWriter().write("{\"message\": \"Login successful\", \"username\": \""
+                + escapeJson(user.getUsername())
+                + "\", \"name\": \""
+                + escapeJson(user.getFullName())
+                + "\", \"role\": \""
+                + escapeJson(user.getRole())
+                + "\"}");
     }
 
     @Override
@@ -50,14 +74,17 @@ public class LoginServlet extends HttpServlet {
             resp.getWriter().write("{\"authenticated\":false}");
             return;
         }
+        String name = session.getAttribute("name") != null ? String.valueOf(session.getAttribute("name")) : String.valueOf(session.getAttribute("username"));
         resp.getWriter().write("{\"authenticated\":true,\"username\":\""
                 + escapeJson(String.valueOf(session.getAttribute("username")))
+                + "\",\"name\":\""
+                + escapeJson(name)
                 + "\",\"role\":\""
                 + escapeJson(String.valueOf(session.getAttribute("role"))) + "\"}");
     }
 
     private String escapeJson(String value) {
+        if (value == null) return "";
         return value.replace("\\", "\\\\").replace("\"", "\\\"");
     }
-
 }

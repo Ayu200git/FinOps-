@@ -112,12 +112,12 @@ const FinOpsUtils = {
     // ─── Role Permissions Matrix ──────────────────
     ROLE_PERMISSIONS: {
         'Admin': {
-            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports', 'settings'],
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports', 'settings', 'users'],
             label: 'System Admin',
             badgeClass: 'text-bg-danger'
         },
         'Branch Manager': {
-            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports'],
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'reports', 'users'],
             label: 'Branch Manager',
             badgeClass: 'text-bg-primary'
         },
@@ -127,7 +127,7 @@ const FinOpsUtils = {
             badgeClass: 'text-bg-info'
         },
         'Relationship Manager': {
-            pages: ['dashboard', 'customers', 'loans', 'kyc'],
+            pages: ['dashboard', 'customers', 'loans', 'kyc', 'users'],
             label: 'Relationship Manager',
             badgeClass: 'text-bg-warning'
         },
@@ -179,6 +179,7 @@ const FinOpsUtils = {
             { key: 'customers', icon: 'fa-users',               label: 'Customers',         href: 'customers.html' },
             { key: 'loans',     icon: 'fa-hand-holding-dollar', label: 'Loan Applications', href: 'loans.html'     },
             { key: 'kyc',       icon: 'fa-folder-open',         label: 'KYC Documents',     href: 'kyc.html'       },
+            { key: 'users',     icon: 'fa-user-shield',         label: 'User Management',   href: 'users.html'     },
             { key: 'reports',   icon: 'fa-chart-bar',           label: 'Reports Center',    href: 'reports.html'   },
             { key: 'settings',  icon: 'fa-sliders',             label: 'Settings Center',   href: 'settings.html'  }
         ];

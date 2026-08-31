@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.ResultSet;
 import com.finops.util.EnvLoader;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -113,8 +114,38 @@ public class DatabaseUtil {
                         "status VARCHAR(20) NOT NULL, " +
                         "applied_date DATE NOT NULL" +
                         ")");
+                stmt.execute("CREATE TABLE IF NOT EXISTS app_user (" +
+                        "user_id SERIAL PRIMARY KEY, " +
+                        "username VARCHAR(100) UNIQUE NOT NULL, " +
+                        "password_hash VARCHAR(255) NOT NULL, " +
+                        "full_name VARCHAR(100) NOT NULL, " +
+                        "role VARCHAR(50) NOT NULL, " +
+                        "status VARCHAR(20) DEFAULT 'ACTIVE', " +
+                        "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                        ")");
+
+                // Always ensure default enterprise role accounts exist (ON CONFLICT DO NOTHING = safe re-run)
+                String[] seedSqls = {
+                    "INSERT INTO app_user (username, password_hash, full_name, role, status) " +
+                    "VALUES ('admin@finops.com', '" + com.finops.util.PasswordUtil.hashPassword("Admin@123") + "', 'System Administrator', 'Admin', 'ACTIVE') ON CONFLICT (username) DO NOTHING",
+                    "INSERT INTO app_user (username, password_hash, full_name, role, status) " +
+                    "VALUES ('manager@finops.com', '" + com.finops.util.PasswordUtil.hashPassword("Manager@123") + "', 'Priya Sharma', 'Branch Manager', 'ACTIVE') ON CONFLICT (username) DO NOTHING",
+                    "INSERT INTO app_user (username, password_hash, full_name, role, status) " +
+                    "VALUES ('officer@finops.com', '" + com.finops.util.PasswordUtil.hashPassword("Officer@123") + "', 'Rahul Verma', 'Branch Officer', 'ACTIVE') ON CONFLICT (username) DO NOTHING",
+                    "INSERT INTO app_user (username, password_hash, full_name, role, status) " +
+                    "VALUES ('rm@finops.com', '" + com.finops.util.PasswordUtil.hashPassword("Rm@123") + "', 'Ananya Roy', 'Relationship Manager', 'ACTIVE') ON CONFLICT (username) DO NOTHING",
+                    "INSERT INTO app_user (username, password_hash, full_name, role, status) " +
+                    "VALUES ('customer@finops.com', '" + com.finops.util.PasswordUtil.hashPassword("Customer@123") + "', 'Arjun Kapoor', 'Customer', 'ACTIVE') ON CONFLICT (username) DO NOTHING"
+                };
+                int inserted = 0;
+                for (String sql : seedSqls) {
+                    inserted += stmt.executeUpdate(sql);
+                }
+                if (inserted > 0) {
+                    System.out.println("[DatabaseUtil] " + inserted + " default role account(s) seeded into app_user.");
+                }
                 initialized = true;
-                System.out.println("[DatabaseUtil] Database customer and loan tables initialized/verified.");
+                System.out.println("[DatabaseUtil] Database customer, loan, and app_user tables initialized/verified.");
             } catch (SQLException e) {
                 System.err.println("[DatabaseUtil] Failed to initialize database tables:");
                 e.printStackTrace();

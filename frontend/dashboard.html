@@ -1,115 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — FinOps Prime</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
-<body data-page="dashboard" class="bg-body-secondary">
+<body data-page="dashboard">
 
-<div class="container-fluid p-0 min-vh-100 d-flex flex-column">
+<div class="d-flex vh-100 overflow-hidden">
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body border-bottom px-3 shadow-sm">
-        <div class="container-fluid">
-            <!-- Brand -->
-            <a class="navbar-brand fw-bold text-primary" href="#">FinOps Prime</a>
-            
-            <!-- Navbar Toggler for mobile -->
-            <button class="navbar-toggler btn btn-sm p-1" type="button" data-bs-toggle="collapse" data-bs-target="#enterpriseNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <!-- Navbar Content -->
-            <div class="collapse navbar-collapse" id="enterpriseNavbar">
-                <!-- Search Box -->
-                <form class="d-flex ms-lg-3 my-2 my-lg-0" role="search" id="navbarSearchForm" style="max-width: 260px;">
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-text bg-transparent border-end-0"><i class="fa-solid fa-magnifying-glass text-secondary"></i></span>
-                        <input class="form-control border-start-0 ps-0 bg-transparent" type="search" placeholder="Search system..." aria-label="Search" id="navbarSearchInput">
-                    </div>
-                </form>
-                
-                <!-- Right Side Actions -->
-                <div class="d-flex align-items-center gap-3 ms-auto mt-2 mt-lg-0">
-                    <!-- Notification Dropdown -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary position-relative" type="button" data-bs-toggle="dropdown" id="notifBellBtn" aria-expanded="false">
-                            <i class="fa-solid fa-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notifCountBadge">0</span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end p-0 shadow border" style="width: 300px; max-height: 380px; overflow-y: auto;" id="notifDropdown">
-                            <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-                                <strong class="small">Notifications</strong>
-                                <a href="#" class="small text-decoration-none" id="markAllReadBtn">Mark all read</a>
-                            </div>
-                            <div id="notifList">
-                                <!-- Loaded dynamically via jQuery -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Theme Toggle Button -->
-                    <button class="btn btn-sm btn-outline-secondary" type="button" id="themeQuickToggleBtn" title="Toggle Theme">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-                    
-                    <!-- Profile Dropdown -->
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
-                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 24px; height: 24px; font-size: 0.75rem;" id="userInitials">U</div>
-                            <span class="small fw-semibold" id="userNameDisplay">User</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border">
-                            <li><h6 class="dropdown-header small text-secondary" id="userEmailDisplay">user@example.com</h6></li>
-                            <li><a class="dropdown-item small" href="settings.html"><i class="fa-solid fa-sliders me-2 text-secondary"></i>Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item small text-danger" href="#" id="topbarLogoutBtn"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <!-- Sidebar Wrapper (rendered dynamically by FinOpsUtils) -->
+    <aside id="sidebar-wrapper"
+           class="d-none d-lg-flex flex-column flex-shrink-0 border-end bg-body-tertiary"
+           style="width:260px;"></aside>
 
-    <!-- Main Grid Row -->
-    <div class="row g-0 flex-grow-1">
+    <div class="d-flex flex-column flex-grow-1 overflow-hidden">
 
-        <!-- Sidebar---->
-        <aside class="col-lg-2 bg-body border-end p-3">
-            <div class="list-group list-group-flush">
-                <a href="dashboard.html" class="list-group-item list-group-item-action active border-0 rounded mb-1 py-2 fw-semibold">
-                    <i class="fa-solid fa-gauge-high me-2"></i>Dashboard
-                </a>
-                <a href="customers.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-users me-2"></i>Customers
-                </a>
-                <a href="loans.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-hand-holding-dollar me-2"></i>Loans
-                </a>
-                <a href="kyc.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-folder-open me-2"></i>KYC
-                </a>
-                <a href="reports.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-chart-bar me-2"></i>Reports
-                </a>
-                <a href="settings.html" class="list-group-item list-group-item-action bg-transparent border-0 rounded mb-1 py-2 text-secondary">
-                    <i class="fa-solid fa-sliders me-2"></i>Settings
-                </a>
-            </div>
-        </aside>
+        <!-- Topbar Wrapper (rendered dynamically by FinOpsUtils) -->
+        <header id="topbar-wrapper" class="bg-body-tertiary"></header>
 
-        <!-- Main Content -->
-        <main class="col-lg-10 p-4">
+        <!-- Main Content Area -->
+        <main class="flex-grow-1 overflow-auto p-3 p-md-4 bg-body-secondary">
 
             <!-- Role Welcome Banner -->
             <div class="card border-0 shadow-sm mb-4 bg-primary bg-gradient text-white">
                 <div class="card-body p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <h4 class="fw-bold mb-0" id="roleWelcomeTitle">Welcome Back</h4>
+                            <h4 class="fw-bold mb-0 text-white" id="roleWelcomeTitle">Welcome Back</h4>
                             <span id="roleHeaderBadge"></span>
                         </div>
                         <p class="mb-0 opacity-75 small" id="roleWelcomeSubtitle">Enterprise Banking & Lending Operations</p>
@@ -120,8 +43,9 @@
                 </div>
             </div>
 
+            <!-- KPI Cards Row -->
             <div class="row g-3 mb-4">
-                 
+                <!-- Card 1: Total Portfolio -->
                 <div class="col-6 col-xl-3">
                     <div class="card kpi-card h-100">
                         <div class="card-body">
@@ -188,8 +112,8 @@
                 <div class="col-lg-8">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>Disbursement vs. Recovery (2026)</span>
-                            <span class="badge bg-primary-soft">Monthly View</span>
+                            <span class="fw-semibold"><i class="fa-solid fa-chart-line text-primary me-2"></i>Disbursement vs. Recovery (2026)</span>
+                            <span class="badge text-bg-primary">Monthly View</span>
                         </div>
                         <div class="card-body">
                             <div style="height:280px;position:relative;">
@@ -200,7 +124,9 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="card h-100">
-                        <div class="card-header">Loan Portfolio Mix</div>
+                        <div class="card-header">
+                            <span class="fw-semibold"><i class="fa-solid fa-chart-pie text-primary me-2"></i>Loan Portfolio Mix</span>
+                        </div>
                         <div class="card-body d-flex flex-column">
                             <div style="height:200px;position:relative;flex-shrink:0;">
                                 <canvas id="loanTypeChart"></canvas>
@@ -210,11 +136,14 @@
                     </div>
                 </div>
             </div>
- Q
-             <div class="row g-3">
+
+            <!-- Quick Actions and Activity Log Row -->
+            <div class="row g-3">
                 <div class="col-lg-4">
                     <div class="card h-100">
-                        <div class="card-header">Quick Actions</div>
+                        <div class="card-header">
+                            <span class="fw-semibold"><i class="fa-solid fa-bolt text-primary me-2"></i>Quick Actions</span>
+                        </div>
                         <div class="card-body">
                             <div class="row g-2">
                                 <div class="col-6"><a href="customers.html?action=new" class="quick-btn"><i class="fa-solid fa-user-plus"></i><span>Add Customer</span></a></div>
@@ -228,13 +157,20 @@
                 <div class="col-lg-8">
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>Recent Activity Log</span>
-                            <span class="text-secondary fs-8">Last 5 actions</span>
+                            <span class="fw-semibold"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Recent Activity Log</span>
+                            <span class="text-secondary small">Last 5 actions</span>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table mb-0">
-                                    <thead><tr><th>Officer</th><th>Action</th><th>Module</th><th>Time</th></tr></thead>
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="ps-3">Officer</th>
+                                            <th>Action</th>
+                                            <th>Module</th>
+                                            <th class="pe-3">Time</th>
+                                        </tr>
+                                    </thead>
                                     <tbody id="activityTableBody"></tbody>
                                 </table>
                             </div>
@@ -246,6 +182,7 @@
         </main>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -12,7 +12,7 @@ $(document).ready(function () {
     /*   STATUS BADGE    */
     function loanBadge(status) {
         const map = {
-            Pending: 'warning', 'Under Review': 'primary', Approved: 'success',
+            Pending: 'warning', 'Under Review': 'primary', 'Approved by Manager': 'info', Approved: 'success',
             Disbursed: 'info', Rejected: 'danger', Closed: 'dark', Paid: 'secondary'
         };
         return `<span class="badge text-bg-${map[status] || 'secondary'}">${status}</span>`;
@@ -110,20 +110,27 @@ $(document).ready(function () {
         } else {
             const session    = FinOpsStorage.getSession();
             const userRole   = session ? FinOpsUtils.getNormalizedRole(session.role) : 'Customer';
-            const canApprove = (userRole === 'Admin' || userRole === 'Branch Manager');
-            const canRecommend = (userRole === 'Branch Officer');
+            const isAdmin    = (userRole === 'Admin');
+            const isManager  = (userRole === 'Branch Manager');
+            const isOfficer  = (userRole === 'Branch Officer');
 
             $('#loanTableBody').html(data.map(l => {
                 let actions = `<button class="btn btn-outline-secondary btn-view" data-id="${l.id}" title="View Details"><i class="fa-solid fa-eye"></i></button>`;
                 
                 if (l.status === 'Pending' || l.status === 'Under Review') {
-                    if (canApprove) {
+                    if (isManager) {
                         actions += `
-                            <button class="btn btn-outline-success btn-approve" data-id="${l.id}" title="Final Approve"><i class="fa-solid fa-check"></i></button>
-                            <button class="btn btn-outline-danger btn-reject" data-id="${l.id}" title="Final Reject"><i class="fa-solid fa-xmark"></i></button>`;
-                    } else if (canRecommend) {
+                            <button class="btn btn-outline-success btn-approve-manager" data-id="${l.id}" title="Manager Approve"><i class="fa-solid fa-check-double"></i></button>
+                            <button class="btn btn-outline-danger btn-reject" data-id="${l.id}" title="Reject"><i class="fa-solid fa-xmark"></i></button>`;
+                    } else if (isOfficer) {
                         actions += `
                             <button class="btn btn-outline-info btn-recommend" data-id="${l.id}" title="Recommend Approval"><i class="fa-solid fa-thumbs-up"></i></button>`;
+                    }
+                } else if (l.status === 'Approved by Manager') {
+                    if (isAdmin) {
+                        actions += `
+                            <button class="btn btn-outline-success btn-approve-final" data-id="${l.id}" title="Final Approve & Disburse"><i class="fa-solid fa-check"></i></button>
+                            <button class="btn btn-outline-danger btn-reject" data-id="${l.id}" title="Reject"><i class="fa-solid fa-xmark"></i></button>`;
                     }
                 } else if (l.status === 'Approved') {
                     actions += `<button class="btn btn-outline-primary btn-pay" data-id="${l.id}" title="Pay EMI"><i class="fa-solid fa-money-bill-wave"></i></button>`;
@@ -220,13 +227,21 @@ $(document).ready(function () {
         render();
     });
 
-    $(document).on('click', '.btn-approve', function () {
-        const id = $(this).data('id');
-        if (!confirm(`Approve loan ${id}? Funds will be disbursed to the customer account.`)) return;
-        FinOpsStorage.updateLoanStatus(id, 'Approved');
-        FinOpsUtils.showAlert(`Loan ${id} approved and disbursed.`, 'success');
-        render();
-    });
+     $(document).on('click', '.btn-approve-manager', function () {
+         const id = $(this).data('id');
+         if (!confirm(`Verify and approve loan ${id} as Branch Manager? It will be forwarded to the Admin for final release.`)) return;
+         FinOpsStorage.updateLoanStatus(id, 'Approved by Manager');
+         FinOpsUtils.showAlert(`Loan ${id} approved by Manager. Awaiting final Admin approval.`, 'info');
+         render();
+     });
+
+     $(document).on('click', '.btn-approve-final', function () {
+         const id = $(this).data('id');
+         if (!confirm(`Finalize and disburse loan ${id}? Funds will be released to the customer account.`)) return;
+         FinOpsStorage.updateLoanStatus(id, 'Approved');
+         FinOpsUtils.showAlert(`Loan ${id} approved and disbursed by Admin.`, 'success');
+         render();
+     });
 
     $(document).on('click', '.btn-reject', function () {
         const id = $(this).data('id');

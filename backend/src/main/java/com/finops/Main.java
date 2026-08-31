@@ -138,16 +138,22 @@ public class Main {
         Tomcat.addServlet(ctx, "logoutServlet", new LogoutServlet());
         ctx.addServletMappingDecoded("/api/logout", "logoutServlet");
 
+        Tomcat.addServlet(ctx, "registerServlet", new com.finops.servlet.RegisterServlet());
+        ctx.addServletMappingDecoded("/api/register", "registerServlet");
+
+        Tomcat.addServlet(ctx, "userApprovalServlet", new com.finops.servlet.UserApprovalServlet());
+        ctx.addServletMappingDecoded("/api/users/*", "userApprovalServlet");
+
         Tomcat.addServlet(
         ctx,
         "kycServlet",
         new KycServlet()
-);
+        );
 
-ctx.addServletMappingDecoded(
+        ctx.addServletMappingDecoded(
         "/api/kyc/upload",
         "kycServlet"
-);
+        );
 
         FilterDef authFilter = new FilterDef();
 
